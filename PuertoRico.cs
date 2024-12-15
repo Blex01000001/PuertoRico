@@ -28,7 +28,7 @@ namespace PuertoRicoSpace
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
             GameStartSetUp(PlayerNum);
-
+            string str = 123.ToHexHashCode();
             while (!EndGame)
             {
                 Console.WriteLine($"==========ROUND {Round + 1}==========");

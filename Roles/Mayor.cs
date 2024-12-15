@@ -37,7 +37,7 @@ namespace PuertoRicoSpace
                     if (EmptyCircleList.Count <= 0)
                         break;
                     EmptyCircleList[0].IncreaseWorker(1);
-                    Console.WriteLine($"\t\t{p2.Name} put 1 worker on {EmptyCircleList[0].Name}({EmptyCircleList[0].GetHashCode()})");
+                    Console.WriteLine($"\t\t{p2.Name} put 1 worker on {EmptyCircleList[0].Name}({EmptyCircleList[0].ToHexHashCode()})");
                     EmptyCircleList.RemoveAt(0);
                 }
                 totalBuildingEmptyCircle += EmptyCircleList.Where(x => x.Type == "Building").ToList().Count;

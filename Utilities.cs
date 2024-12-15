@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
 {
-    internal class Utilities
+    public static class Utilities
     {
         static public int RndNum()
         {
@@ -23,6 +24,13 @@ namespace PuertoRicoSpace
             AddToList.Add(item);
             RemoveFromList.Remove(item);
         }
-
+        public static string ToHexHashCode(this object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+            string hash;
+            hash = Math.Abs(obj.GetHashCode() / 1024).ToString("X");
+            return hash;
+        }
     }
 }
