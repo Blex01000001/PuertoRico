@@ -13,7 +13,7 @@ namespace PuertoRico.Roles
         public override void Action(Player player, PuertoRico game)
         {
             Console.WriteLine($"\t{Name} Action");
-            Console.WriteLine($"\t{game.Bank.WorkerShip} Worker on ship");
+            Console.WriteLine($"\t{game.Bank.WorkerShip} Worker on WorkerShip");
             Console.WriteLine($"\t{player.Name} get 1 worker from bank(Mayor)");
             player.IncreaseWorker(game.Bank.GetWorkerFromBank(1));//市長特權
             while (game.Bank.WorkerShip > 0)
@@ -23,7 +23,7 @@ namespace PuertoRico.Roles
                     if (game.Bank.WorkerShip <= 0)
                         break;
                     p1.IncreaseWorker(game.Bank.GetWorkerFromWorkerShip(1));
-                    Console.WriteLine($"\t{p1.Name} get 1 worker");
+                    Console.WriteLine($"\t{p1.Name} get 1 worker from WorkerShip, WorkerShip remaining: {game.Bank.WorkerShip}");
                 }
             }
             int totalBuildingEmptyCircle = 0;

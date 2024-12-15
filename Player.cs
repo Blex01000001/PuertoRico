@@ -17,7 +17,10 @@ namespace PuertoRico
         public List<BuildingAbstract> FarmList { get; private set; }
         public List<BuildingAbstract> BuildingList { get; private set; }
         public bool UsedStealthShip { get; private set; }
-
+        public void UseStealthShip()
+        {
+            UsedStealthShip = false;
+        }
         public void SetRole(string role)
         {
             Role = role;
@@ -32,12 +35,17 @@ namespace PuertoRico
             Cargos = new List<CargoAbstract>();
             FarmList = new List<BuildingAbstract>();
             BuildingList = new List<BuildingAbstract>();
+            UsedStealthShip = true;
             Cargos.Add(new Corn(0));
             Cargos.Add(new Sugar(0));
             Cargos.Add(new Coffee(0));
             Cargos.Add(new Tobacco(0));
             Cargos.Add(new Indigo(0));
             this.Name = name;
+        }
+        public void IncreaseScore(int qty)
+        {
+            Score += qty;
         }
         public void IncreaseMoney(int qty)
         {

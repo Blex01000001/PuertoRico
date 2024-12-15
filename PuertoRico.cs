@@ -225,7 +225,7 @@ namespace PuertoRico
                 Console.Write($"{player.Name}    \t{player.Score}   \t{player.Money}   \t{player.Worker}    \t{player.Cargos[0].Qty}   \t{player.Cargos[1].Qty}    \t{player.Cargos[2].Qty}     \t{player.Cargos[3].Qty}      \t{player.Cargos[4].Qty}\n");
             }
             Console.Write("\n");
-            Console.Write($"field:\n");
+            Console.Write($"Field:\n");
             foreach (Player player in PlayerList)
             {
                 Console.Write($"{player.Name} ");
@@ -236,7 +236,7 @@ namespace PuertoRico
                 Console.Write($"\n");
             }
 
-            Console.Write($"\nbuilding:\n");
+            Console.Write($"\nBuilding:\n");
             foreach (Player player in PlayerList)
             {
                 Console.Write($"{player.Name} ");

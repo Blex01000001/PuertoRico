@@ -31,6 +31,9 @@ namespace PuertoRico
             Cargo = null;
             Quantity = 0;
         }
-
+        public void SetCargo(string cargoName)
+        {
+            Cargo = cargoName;
+        }
     }
 }

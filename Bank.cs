@@ -321,7 +321,22 @@ namespace PuertoRico
         {
             AvailableBuildings = AvailableBuildings.OrderBy(x => Utilities.RndNum()).ToList();
         }
-
-
+        public void CheckCargoShip()
+        {
+            foreach (Ship ship in Ships)
+            {
+                if (ship.Quantity >= ship.MaxCargoQuantity)
+                {
+                    ship.Reset();
+                    Console.WriteLine($"***Ship({ship.GetHashCode()}) has been Reset***");
+                }
+            }
+            Console.WriteLine("");
+        }
+        public int GetScore(int score)
+        {
+            Score -= score;
+            return score;
+        }
     }
 }
