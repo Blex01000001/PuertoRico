@@ -43,8 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bank.cs" />
+    <Compile Include="Building\BuildingAbstract.cs" />
+    <Compile Include="Good\CargoAbstract.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PuertoRico.cs" />
+    <Compile Include="Roles\Builder.cs" />
+    <Compile Include="Roles\Captain.cs" />
+    <Compile Include="Roles\Craftsman.cs" />
+    <Compile Include="Roles\Mayor.cs" />
+    <Compile Include="Roles\Prospector.cs" />
+    <Compile Include="Roles\RoleAbstract.cs" />
+    <Compile Include="Roles\Settler.cs" />
+    <Compile Include="Roles\Trader.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
