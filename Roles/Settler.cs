@@ -48,13 +48,13 @@ namespace PuertoRicoSpace
         }
         private void GetQuarry(Player p1, PuertoRico game)
         {
-            Console.WriteLine($"\t{p1.Name} select the {game.Bank.QuarryFields[0].Name}({game.Bank.QuarryFields[0].GetHashCode()}");
+            Console.WriteLine($"\t{p1.Name} select the {game.Bank.QuarryFields[0].Name}({game.Bank.QuarryFields[0].GetHexHash()}");
             p1.FarmList.Add(game.Bank.QuarryFields[0]);
             game.Bank.QuarryFields.Remove(game.Bank.QuarryFields[0]);
         }
         private void GetField(Player p1, PuertoRico game)
         {
-            Console.WriteLine($"\t{p1.Name} select the {game.Bank.AvailableFarms[0].Name}({game.Bank.AvailableFarms[0].GetHashCode()})");
+            Console.WriteLine($"\t{p1.Name} select the {game.Bank.AvailableFarms[0].Name}({game.Bank.AvailableFarms[0].GetHexHash()})");
             p1.FarmList.Add(game.Bank.AvailableFarms[0]);
             game.Bank.AvailableFarms.Remove(game.Bank.AvailableFarms[0]);
         }

@@ -28,7 +28,7 @@ namespace PuertoRicoSpace
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
             GameStartSetUp(PlayerNum);
-            string str = 123.ToHexHashCode();
+            
             while (!EndGame)
             {
                 Console.WriteLine($"==========ROUND {Round + 1}==========");
@@ -230,7 +230,7 @@ namespace PuertoRicoSpace
                 Console.Write($"{player.Name} ");
                 foreach (BuildingAbstract field in player.FarmList)
                 {
-                    Console.Write($"{field.Name}({field.GetHashCode()})({field.Worker}/{field.MaxWorker})\t, ");
+                    Console.Write($"{field.Name}({field.GetHexHash()})({field.Worker}/{field.MaxWorker})\t, ");
                 }
                 Console.Write($"\n");
             }
@@ -241,7 +241,7 @@ namespace PuertoRicoSpace
                 Console.Write($"{player.Name} ");
                 foreach (BuildingAbstract building in player.BuildingList)
                 {
-                    Console.Write($"{building.Name} ({building.GetHashCode()}) ({building.Worker}/{building.MaxWorker}), ");
+                    Console.Write($"{building.Name} ({building.GetHexHash()}) ({building.Worker}/{building.MaxWorker}), ");
                 }
                 Console.Write($"\n");
             }
@@ -291,7 +291,7 @@ namespace PuertoRicoSpace
                 if (ship.Quantity >= ship.MaxCargoQuantity)
                 {
                     ship.Reset();
-                    Console.WriteLine($"***Ship({ship.GetHashCode()}) has been clear***");
+                    Console.WriteLine($"***Ship({ship.GetHexHash()}) has been clear***");
                 }
             }
             Console.WriteLine("");
@@ -300,7 +300,7 @@ namespace PuertoRicoSpace
         {
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"Ship({ship.GetHashCode()})\t");
+                Console.Write($"Ship({ship.GetHexHash()})\t");
             }
             Console.Write("\n");
             foreach (Ship ship in Bank.Ships)

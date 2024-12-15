@@ -328,7 +328,7 @@ namespace PuertoRicoSpace
                 if (ship.Quantity >= ship.MaxCargoQuantity)
                 {
                     ship.Reset();
-                    Console.WriteLine($"***Ship({ship.GetHashCode()}) has been Reset***");
+                    Console.WriteLine($"***Ship({ship.GetHexHash()}) has been Reset***");
                 }
             }
             Console.WriteLine("");

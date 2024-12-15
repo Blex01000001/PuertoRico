@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,13 +25,18 @@ namespace PuertoRicoSpace
             AddToList.Add(item);
             RemoveFromList.Remove(item);
         }
-        public static string ToHexHashCode(this object obj)
+        public static string GetHexHash(this object obj)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
-            string hash;
-            hash = Math.Abs(obj.GetHashCode() / 1024).ToString("X");
-            return hash;
+            // 1. 使用 GetHashCode 生成整數哈希值
+            int hash = obj.GetHashCode();
+
+            // 2. 對哈希值取模，縮小範圍到 4 位元
+            int reducedHash = Math.Abs(hash % 65536); // 65536 = 16^4, 保證結果為 4 位
+
+            // 3. 將結果轉為 16 進制字串
+            return reducedHash.ToString("X4"); // "X4" 保證固定長度為 4
         }
     }
 }
