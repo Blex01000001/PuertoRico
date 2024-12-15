@@ -58,6 +58,7 @@
     <Compile Include="Roles\RoleAbstract.cs" />
     <Compile Include="Roles\Settler.cs" />
     <Compile Include="Roles\Trader.cs" />
+    <Compile Include="Ship.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>

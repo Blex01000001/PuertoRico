@@ -66,7 +66,50 @@ namespace PuertoRico
             BuildingList.AddRange(BuildingList);
             BuildingList.AddRange(FarmList);
             return BuildingList;
-
         }
+        public void IncreaseWorker(int qty)
+        {
+            Worker += qty;
+        }
+        public List<BuildingAbstract> GetEmptyCircleList()
+        {
+            List<BuildingAbstract> PlayerBuildings = new List<BuildingAbstract>();
+            //Console.WriteLine($"FarmList.count: {FarmList.Count}");
+            foreach (BuildingAbstract farm in FarmList)
+            {
+                for (int i = 0; i < farm.MaxWorker; i++)
+                {
+                    PlayerBuildings.Add(farm);
+                }
+            }
+
+            foreach (BuildingAbstract Building in BuildingList)
+            {
+                for (int i = 0; i < Building.MaxWorker; i++)
+                {
+                    PlayerBuildings.Add(Building);
+                }
+            }
+            //Console.WriteLine($"PlayerBuildings.count: {PlayerBuildings.Count}");
+
+            PlayerBuildings = PlayerBuildings.OrderBy(x => Utilities.RndNum()).ToList();
+            return PlayerBuildings;
+        }
+        public void ClearFarmWorker()
+        {
+            foreach (BuildingAbstract farm in FarmList)
+            {
+                farm.ResetWorker();
+            }
+        }
+        public void ClearFactoryWorker()
+        {
+            foreach (BuildingAbstract Building in BuildingList)
+            {
+                Building.ResetWorker();
+            }
+        }
+
+
     }
 }

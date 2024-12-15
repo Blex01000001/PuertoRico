@@ -22,6 +22,14 @@ namespace PuertoRico
         {
             Worker = 0; // 初始工作人數為 0
         }
+        public void ResetWorker()
+        {
+            Worker = 0;
+        }
+        public void IncreaseWorker(int qty)
+        {
+            Worker += qty;
+        }
     }
     //5種大型特殊建築物（占2個建築物空間）各一
     //12種小型特殊建物（占1個建築物空間）各二

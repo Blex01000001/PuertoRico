@@ -19,6 +19,7 @@ namespace PuertoRico
         public List<BuildingAbstract> AvailableFarms  { get; internal set; }
         public List<BuildingAbstract> HideFarms  { get; internal set; }
         public List<BuildingAbstract> AvailableBuildings { get; private set; }
+        public List<Ship> Ships { get; private set; }
 
         private void CreateCargos()
         {
@@ -203,6 +204,29 @@ namespace PuertoRico
 
             AvailableBuildings = AvailableBuildings.OrderBy(x => Utilities.RndNum()).ToList();
         }
+        private void CreateShip(int playerNum)
+        {
+            Ships = new List<Ship>();
+            if (playerNum == 3)
+            {
+                Ships.Add(new Ship(4, "Normal"));
+                Ships.Add(new Ship(5, "Normal"));
+                Ships.Add(new Ship(6, "Normal"));
+            }
+            else if (playerNum == 4)
+            {
+                Ships.Add(new Ship(5, "Normal"));
+                Ships.Add(new Ship(6, "Normal"));
+                Ships.Add(new Ship(7, "Normal"));
+            }
+            else
+            {
+                Ships.Add(new Ship(6, "Normal"));
+                Ships.Add(new Ship(7, "Normal"));
+                Ships.Add(new Ship(8, "Normal"));
+            }
+
+        }
         public void SetUp(int playerNum)
         {
             Cargos = new List<CargoAbstract>();
@@ -219,6 +243,7 @@ namespace PuertoRico
             SetScore(playerNum);
             CreateFarms();
             CreateBuildings();
+            CreateShip(playerNum);
 
 
 
@@ -267,7 +292,10 @@ namespace PuertoRico
             WorkerShip -= request;
             return request;
         }
-
+        public void ResetWorkerShip(int workerNum)
+        {
+            WorkerShip = workerNum;
+        }
         public void AddMoney(int qty)
         {
             Money += qty;
@@ -293,5 +321,7 @@ namespace PuertoRico
         {
             AvailableBuildings = AvailableBuildings.OrderBy(x => Utilities.RndNum()).ToList();
         }
+
+
     }
 }

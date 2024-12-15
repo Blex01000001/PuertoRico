@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PuertoRico.Roles
-{
-    public class Builder: RoleAbstract
+{    //建築師可以不建嗎?
+    //其他玩家可以不建嗎?
+    public class Builder: RoleAbstract//建築師
     {
         public override string Name => "Builder   ";
         

@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PuertoRico.Roles
-{
-    public class Settler : RoleAbstract
+{    //選擇開拓者的玩家可以不拿郊區方塊嗎?
+    //其他玩家可以不拿郊區方塊嗎?
+
+    public class Settler : RoleAbstract //開拓者
     {
         public override string Name => "Settler   ";
 

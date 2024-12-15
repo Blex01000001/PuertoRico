@@ -10,7 +10,7 @@ namespace PuertoRico
     public  class PuertoRico
     {
         public int PlayerNum { get; private set; }
-        public Bank Bank = new Bank();
+        public Bank Bank { get; private set; }
         public List<Player> PlayerList { get; private set; }
         public List<Player> PlayerListByGovernor { get; private set; }
         public List<RoleAbstract> AvailableRoles { get; private set; }//角色List
@@ -22,6 +22,7 @@ namespace PuertoRico
         public PuertoRico(int playerNum)
         {
             this.PlayerNum = playerNum;
+            Bank = new Bank();
             Bank.SetUp(PlayerNum);
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
@@ -62,21 +63,24 @@ namespace PuertoRico
                 //ShowAvailableFarms();
                 //ShowHideFarms();
                 ShowBankStatus();
+                
                 //ShowShopGoods();
-                //Ship.ShowCargo();
+                ShowCargo();
                 ShowPlayerStatus();
 
                 NextGovernor();//換下一個人當總督
                 ClearPlayerRoles();//清空每個人所選的角色
                 Console.WriteLine("\n");
 
-                if(Round > 10)
-                    break;
                 Round++;
             }
 
 
 
+        }
+        public void CallGame()
+        {
+            EndGame = true;
         }
         private void GameStartSetUp(int playerNum)
         {
@@ -279,6 +283,37 @@ namespace PuertoRico
 
 
         }
+        public void CheckCargo()
+        {
+            foreach (Ship ship in Bank.Ships)
+            {
+                if (ship.Quantity >= ship.MaxCargoQuantity)
+                {
+                    ship.Reset();
+                    Console.WriteLine($"***Ship({ship.GetHashCode()}) has been clear***");
+                }
+            }
+            Console.WriteLine("");
+        }
+        public void ShowCargo()
+        {
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"Ship({ship.GetHashCode()})\t");
+            }
+            Console.Write("\n");
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"{ship.Cargo}\t\t\t");
+            }
+            Console.Write("\n");
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"{ship.Quantity}\t\t\t\t");
+            }
+            Console.Write("\n");
+        }
+
 
     }
 }
