@@ -309,7 +309,7 @@ namespace PuertoRico
             Console.Write("\n");
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"{ship.Quantity}\t\t\t\t");
+                Console.Write($"{ship.Quantity}\t\t");
             }
             Console.Write("\n");
         }

@@ -109,6 +109,18 @@ namespace PuertoRico
                 Building.ResetWorker();
             }
         }
+        public void IncreaseCargo(string CargoName, int qty)
+        {
+            Cargos.Find(x => x.Name == CargoName).Add(qty);
+        }
+        public int GetFarmWorker(string IndustryType)
+        {
+            return FarmList.Where(x => x.Industry == IndustryType).Where(x => x.Worker > 0).Sum(x => x.Worker);
+        }
+        public int GetBuildingWorker(string IndustryType)
+        {
+            return BuildingList.Where(x => x.Industry == IndustryType).Where(x => x.Worker > 0).Sum(x => x.Worker);
+        }
 
 
     }
