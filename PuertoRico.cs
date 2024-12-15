@@ -15,6 +15,7 @@ namespace PuertoRico
         public List<Player> PlayerListByGovernor { get; private set; }
         public List<RoleAbstract> AvailableRoles { get; private set; }//角色List
         public List<RoleAbstract> SelectedRoles { get; private set; }
+        public List<CargoAbstract> Shop { get; private set; }//商店四格商品的空間
 
         private bool EndGame = false;
         private int Round = 0;
@@ -23,6 +24,7 @@ namespace PuertoRico
         {
             this.PlayerNum = playerNum;
             Bank = new Bank();
+            Shop = new List<CargoAbstract>();
             Bank.SetUp(PlayerNum);
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
@@ -64,7 +66,7 @@ namespace PuertoRico
                 //ShowHideFarms();
                 ShowBankStatus();
                 
-                //ShowShopGoods();
+                ShowShopGoods();
                 ShowCargo();
                 ShowPlayerStatus();
 
@@ -313,7 +315,27 @@ namespace PuertoRico
             }
             Console.Write("\n");
         }
-
+        public void ShowShopGoods()
+        {
+            Console.Write("\n");
+            Console.Write($"ShopGoods:");
+            foreach (CargoAbstract good in Shop)
+            {
+                Console.Write($" {good.Name}");
+            }
+            Console.Write($"\n");
+        }
+        public void CheckShop()
+        {
+            if (Shop.Count >= 4)
+            {
+                foreach (CargoAbstract cargo in Shop)
+                {
+                    Bank.AddCargo(cargo.GetType(), 1);
+                }
+                Shop.Clear();
+            }
+        }
 
     }
 }

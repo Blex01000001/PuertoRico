@@ -113,6 +113,11 @@ namespace PuertoRico
         {
             Cargos.Find(x => x.Name == CargoName).Add(qty);
         }
+        public int DecreaseCargo(string CargoName, int qty)
+        {
+            return Cargos.Find(x => x.Name == CargoName).Get(qty);
+        }
+
         public int GetFarmWorker(string IndustryType)
         {
             return FarmList.Where(x => x.Industry == IndustryType).Where(x => x.Worker > 0).Sum(x => x.Worker);

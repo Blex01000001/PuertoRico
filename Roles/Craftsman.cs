@@ -31,9 +31,7 @@ namespace PuertoRico.Roles
             if (good.GetType() == typeof(Corn))
             {
                 return player.GetFarmWorker("Corn");
-            }
-            else
-            {
+            }else{
                 int FarmWorker = player.GetFarmWorker(good.GetType().Name);
                 if (FarmWorker <= 0)
                     return -1;
