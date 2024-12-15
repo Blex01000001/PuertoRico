@@ -5,7 +5,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PuertoRico.Roles
+namespace PuertoRicoSpace
 {
     public class Captain : RoleAbstract//船長
     {

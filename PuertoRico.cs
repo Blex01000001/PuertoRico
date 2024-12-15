@@ -1,11 +1,10 @@
-﻿using PuertoRico.Roles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PuertoRico
+namespace PuertoRicoSpace
 {
     public  class PuertoRico
     {

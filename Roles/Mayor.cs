@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PuertoRico.Roles
+namespace PuertoRicoSpace
 {//移民不夠補充移民船時，是此次腳色輪轉後結束還是下一回合才結束?
     public class Mayor : RoleAbstract//市長
     {

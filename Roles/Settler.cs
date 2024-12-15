@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PuertoRico.Roles
+namespace PuertoRicoSpace
 {    //選擇開拓者的玩家可以不拿郊區方塊嗎?
     //其他玩家可以不拿郊區方塊嗎?
 

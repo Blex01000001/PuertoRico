@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace PuertoRico
+namespace PuertoRicoSpace
 {
     public abstract class CargoAbstract
     {
