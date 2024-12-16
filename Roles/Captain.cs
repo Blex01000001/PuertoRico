@@ -10,7 +10,7 @@ namespace PuertoRicoSpace
     public class Captain : RoleAbstract//船長
     {
         public override string Name => "Captain   ";
-        private bool CaptainPrivilege = true;
+        private bool Privilege = true;
         public override void Action(Player player, PuertoRico game)
         {
             //從船長開始，依照上下家次序，將各項物資運上貨船，以運回舊大陸。任何人依據規則，只要有物資可以運上船，就必須要將物資運上船。物資運輸的輪替會一直重複，直到所有人都無法將物資運上船為止。
@@ -50,11 +50,11 @@ namespace PuertoRicoSpace
                     Strategies = Strategies.OrderBy(x => Utilities.RndNum()).ToList();//打亂策略順序
                     TransportStrategy executionStrategy = Strategies.First(x => x.Score == topScore);
                     executionStrategy.Transport(p1, game);//執行分數最高的第一個策略
-                    if (CaptainPrivilege && p1.Role == "Captain   ")
+                    if (Privilege && p1.Role == "Captain   ")
                     {
                         Console.WriteLine($"\t\t{p1.Name} get 1 Score(Captain Privilege)");
                         p1.IncreaseScore(game.Bank.GetScore(1));
-                        CaptainPrivilege = false;
+                        Privilege = false;
                     }
                     if (executionStrategy.IsStealth)
                         p1.UseStealthShip();

@@ -36,6 +36,23 @@ namespace PuertoRicoSpace
             Qty -= qty;
             return qty;
         }
+        public int TryGet(int qty)
+        {
+            if (Qty <= 0)
+            {
+                Console.WriteLine($" there are no {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                return 0;
+            }
+            else if (Qty < qty)
+            {
+                int temp = Qty;
+                Qty = 0;
+                Console.WriteLine($" only {temp} {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                return temp;
+            }
+            return qty;
+        }
+
     }
 
     public class Coffee : CargoAbstract
