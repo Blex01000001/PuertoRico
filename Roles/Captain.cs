@@ -50,17 +50,17 @@ namespace PuertoRicoSpace
                     Strategies = Strategies.OrderBy(x => Utilities.RndNum()).ToList();//打亂策略順序
                     TransportStrategy executionStrategy = Strategies.First(x => x.Score == topScore);
                     executionStrategy.Transport(p1, game);//執行分數最高的第一個策略
-                    if (Privilege && p1.Role == "Captain   ")
-                    {
-                        Console.WriteLine($"\t\t{p1.Name} get 1 Score(Captain Privilege)");
-                        p1.IncreaseScore(game.Bank.GetScore(1));
-                        Privilege = false;
-                    }
-                    if (executionStrategy.IsStealth)
-                        p1.UseStealthShip();
+
+                    //船長能夠將物資運上船，則他在整段運輸物資的過程可以多得一分（特權）
+                    CaptainPrivilege(p1,game, executionStrategy);
                 }
             } while (playerStrategies.Where(x => x == 0).ToList().Count == game.PlayerNum);
-            game.Bank.CheckCargoShip();
+            game.Bank.CheckCargoShip();//檢查船是否裝滿貨物
+
+            //從船長開始，每個玩家必須選擇手中餘下的商品中的一份留下（並非一種，而是只能留有一份(個/箱)），其餘歸還銀行
+            Console.WriteLine($"\tCheck Cargo Spoilage:");
+            CheckCargoSpoilage(player, game);
+
 
         }
         private TransportStrategy CheckStrategy(Ship ship, CargoAbstract good)
@@ -69,7 +69,81 @@ namespace PuertoRicoSpace
                 return null;
             return new TransportStrategy(ship, good);
         }
+        private void CaptainPrivilege(Player p1, PuertoRico game, TransportStrategy executionStrategy)
+        {
+            if (Privilege && p1.Role == "Captain   ")
+            {
+                Console.WriteLine($"\t\t{p1.Name} get 1 Score(Captain Privilege)");
+                p1.IncreaseScore(game.Bank.GetScore(1));
+                Privilege = false;
+            }
+            if (executionStrategy.IsStealth)
+                p1.UseStealthShip();
+        }
+        private void CheckCargoSpoilage(Player player, PuertoRico game)
+        {
+            foreach (Player p1 in game.GetPlayerListFromRole(player))
+            {
+                Console.WriteLine("");
+                List<CargoAbstract> cargos = p1.Cargos.Where(x => x.Qty > 0).OrderByDescending(x => x.Qty).ToList();
+                bool hasSmallwarehouse = Utilities.CheckBuildingWithWorker(p1, typeof(Smallwarehouse));
+                bool hasLargewarehouse = Utilities.CheckBuildingWithWorker(p1, typeof(Largewarehouse));
+                int retainLimit = 0;//計算可以持有幾種商品可以不腐敗
+                if (hasSmallwarehouse) retainLimit += 1;
+                if (hasLargewarehouse) retainLimit += 2;
+                //Console.WriteLine($"\t\t{p1.Name} cargos.Count: {cargos.Count}");
+                p1.ShowCargo();
+                Console.WriteLine($"\t\t{p1.Name} retainLimit: {retainLimit}");
 
+
+                if(cargos.Count == 0 || cargos == null)//貨品皆為0，沒有貨品可以腐爛
+                {
+                    Console.WriteLine($"\t\t{p1.Name} No Cargo Spoilage");
+                    continue;
+                }
+
+                for (int i = 0; i < retainLimit; i++)//有倉庫就保留
+                {
+                    if (cargos.Count == 0) continue;
+                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Warehouse)");
+                    cargos.RemoveAt(0);
+                }
+
+                if (cargos.Count == 0) continue;
+
+                if(cargos[0].Qty == 1)
+                {
+                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Spoilage Rule)");
+                }
+                else if (cargos[0].Qty > 1)//貨物多餘1的就腐爛
+                {
+                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} 1 (Spoilage Rule)");
+                    int decreaseCargo = p1.DecreaseCargo(cargos[0].Name, cargos[0].Qty - 1);
+                    //Console.WriteLine($"\t\t{p1.Name} decrease {cargos[0].Name} {decreaseCargo}, bank{game.Bank.GetCargoQty(cargos[0].GetType())}");
+                    game.Bank.AddCargo(cargos[0].GetType(), decreaseCargo);
+                    Console.WriteLine($"\t\t{p1.Name} {cargos[0].Name} Spoilage {decreaseCargo}");
+                    //Console.WriteLine($"\t\tbank{game.Bank.GetCargoQty(cargos[0].GetType())}");
+                    //} else {
+                }
+                cargos.RemoveAt(0);
+
+                if (cargos.Count == 0) continue;
+                //Console.WriteLine($"\t\t\t{p1.Name} cargos.Count: {cargos.Count}");
+
+                foreach (CargoAbstract cargo in cargos)//剩下的全部都繳回
+                {
+                    //Console.WriteLine($"\t\t***");
+                    //Console.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
+                    string cargoName = cargo.Name;
+                    int cargoQty = cargo.Qty;
+                    game.Bank.AddCargo(cargo.GetType(), p1.DecreaseCargo(cargoName, cargoQty));
+                    Console.WriteLine($"\t\t{p1.Name} {cargo.Name} Spoilage {cargoQty}");
+                   // Console.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
+                }
+
+                p1.ShowCargo();
+            }
+        }
     }
     internal class TransportStrategy
     {

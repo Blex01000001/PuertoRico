@@ -256,6 +256,10 @@ namespace PuertoRicoSpace
         {
             return Cargos.Find(x => x.GetType() == cargo).Get(qty);
         }
+        public int GetCargoQty(Type cargo)
+        {
+            return Cargos.Find(x => x.GetType() == cargo).Qty;
+        }
         public int TryGetCargo(Type cargo, int qty)
         {
             return Cargos.Find(x => x.GetType() == cargo).TryGet(qty);

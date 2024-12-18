@@ -70,10 +70,10 @@ namespace PuertoRicoSpace
         }
         public List<BuildingAbstract> GetAllBuildings()
         {
-            List<BuildingAbstract> BuildingList = new List<BuildingAbstract>();
-            BuildingList.AddRange(BuildingList);
-            BuildingList.AddRange(FarmList);
-            return BuildingList;
+            List<BuildingAbstract> allBuildings = new List<BuildingAbstract>();
+            allBuildings.AddRange(BuildingList);
+            allBuildings.AddRange(FarmList);
+            return allBuildings;
         }
         public void IncreaseWorker(int qty)
         {
@@ -134,7 +134,16 @@ namespace PuertoRicoSpace
         {
             return BuildingList.Where(x => x.Industry == IndustryType).Where(x => x.Worker > 0).Sum(x => x.Worker);
         }
+        public void ShowCargo()
+        {
+            Console.Write($"\t\t{Name} cargos: ");
+            foreach (CargoAbstract cargo in Cargos)
+            {
+                Console.Write($"{cargo.Name}:{cargo.Qty} ");
+            }
+            Console.Write($"\n");
 
+        }
 
     }
 }

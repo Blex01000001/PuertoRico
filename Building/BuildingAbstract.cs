@@ -109,7 +109,7 @@ namespace PuertoRicoSpace
     //
     //生廠廠房
     //
-    internal class IndigoPlant : BuildingAbstract
+    public class IndigoPlant : BuildingAbstract
     {
         public IndigoPlant(int smallLarge)
         {
@@ -135,7 +135,7 @@ namespace PuertoRicoSpace
             }
         }
     }
-    internal class SugarMill : BuildingAbstract
+    public class SugarMill : BuildingAbstract
     {
         public SugarMill(int smallLarge)
         {
@@ -162,7 +162,7 @@ namespace PuertoRicoSpace
             }
         }
     }
-    internal class TobaccoStorage : BuildingAbstract
+    public class TobaccoStorage : BuildingAbstract
     {
         public TobaccoStorage()
         {
@@ -175,7 +175,7 @@ namespace PuertoRicoSpace
             Score = 3;
         }
     }
-    internal class CoffeeRoaster : BuildingAbstract
+    public class CoffeeRoaster : BuildingAbstract
     {
         public CoffeeRoaster()
         {
@@ -191,7 +191,7 @@ namespace PuertoRicoSpace
     //
     //小型特殊功能建築
     //
-    internal class Smallmarket : BuildingAbstract
+    public class Smallmarket : BuildingAbstract
     {
         public Smallmarket()
         {
@@ -204,7 +204,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Largemarket : BuildingAbstract
+    public class Largemarket : BuildingAbstract
     {
         public Largemarket()
         {
@@ -217,7 +217,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Hacienda : BuildingAbstract
+    public class Hacienda : BuildingAbstract
     {
         public Hacienda()
         {
@@ -230,7 +230,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Constructionhut : BuildingAbstract
+    public class Constructionhut : BuildingAbstract
     {
         public Constructionhut()
         {
@@ -243,7 +243,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Smallwarehouse : BuildingAbstract
+    public class Smallwarehouse : BuildingAbstract
     {
         public Smallwarehouse()
         {
@@ -256,7 +256,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Largewarehouse : BuildingAbstract
+    public class Largewarehouse : BuildingAbstract
     {
         public Largewarehouse()
         {
@@ -270,7 +270,7 @@ namespace PuertoRicoSpace
         }
     }
 
-    internal class Hospice : BuildingAbstract
+    public class Hospice : BuildingAbstract
     {
         public Hospice()
         {
@@ -283,7 +283,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Office : BuildingAbstract
+    public class Office : BuildingAbstract
     {
         public Office()
         {
@@ -296,7 +296,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Factory : BuildingAbstract
+    public class Factory : BuildingAbstract
     {
         public Factory()
         {
@@ -309,7 +309,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class University : BuildingAbstract
+    public class University : BuildingAbstract
     {
         public University()
         {
@@ -322,7 +322,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Harbor : BuildingAbstract
+    public class Harbor : BuildingAbstract
     {
         public Harbor()
         {
@@ -335,7 +335,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Wharf : BuildingAbstract
+    public class Wharf : BuildingAbstract
     {
         public Wharf()
         {
@@ -351,7 +351,7 @@ namespace PuertoRicoSpace
     //
     //大型特殊功能建築
     //
-    internal class Guildhall : BuildingAbstract
+    public class Guildhall : BuildingAbstract
     {
         public Guildhall()
         {
@@ -364,7 +364,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Residence : BuildingAbstract
+    public class Residence : BuildingAbstract
     {
         public Residence()
         {
@@ -377,7 +377,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Fortress : BuildingAbstract
+    public class Fortress : BuildingAbstract
     {
         public Fortress()//要塞
         {
@@ -390,7 +390,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Customshouse : BuildingAbstract
+    public class Customshouse : BuildingAbstract
     {
         public Customshouse()//海關
         {
@@ -403,7 +403,7 @@ namespace PuertoRicoSpace
             //Score = 0;
         }
     }
-    internal class Cityhall : BuildingAbstract
+    public class Cityhall : BuildingAbstract
     {
         public Cityhall()//市政廳
         {
@@ -419,7 +419,7 @@ namespace PuertoRicoSpace
     //
     //空建築，當作PASS
     //
-    internal class PassBuilding : BuildingAbstract
+    public class PassBuilding : BuildingAbstract
     {
         public PassBuilding()
         {
