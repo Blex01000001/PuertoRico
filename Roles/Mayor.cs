@@ -46,7 +46,7 @@ namespace PuertoRicoSpace
 
             game.Bank.ResetWorkerShip(totalBuildingEmptyCircle > game.PlayerNum ? totalBuildingEmptyCircle : game.PlayerNum);
             game.Bank.GetWorkerFromBank(game.Bank.WorkerShip);
-            if (game.Bank.Worker < 0)//移民不夠補充移民船時，則遊戲結束事件發生
+            if (game.Bank.Worker <= 0)//移民不夠補充移民船時，則遊戲結束事件發生
             {
                 Console.WriteLine("\n>>>>移民不夠補充移民船，遊戲將在角色輪轉後結束<<<<\n");
                 game.CallGame();

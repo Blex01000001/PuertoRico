@@ -270,15 +270,32 @@ namespace PuertoRicoSpace
         }
         public int GetWorkerFromBank(int request)
         {
-            if(Worker < request)
+            if (Worker <= 0)
             {
-                int tempWorker = Worker;
+                Console.WriteLine("***there are no worker on bank***");
+                return 0;
+            }
+            else if(Worker < request)
+            {
                 Worker -= request;
-                return tempWorker;
+                Console.WriteLine("***there are not enough worker on bank***");
+                return request;
             }
             Worker -= request;
             return request;
         }
+        public int TryGetWorkerFromBank(int request)
+        {
+            if (Worker < request)
+            {
+                int tempWorker = Worker;
+                
+                return tempWorker;
+            }
+            
+            return request;
+        }
+
         public void AddWorkerToWorkerShip(int qty)
         {
             WorkerShip += qty;
@@ -300,6 +317,22 @@ namespace PuertoRicoSpace
             WorkerShip -= request;
             return request;
         }
+        public int TryGetWorkerFromWorkerShip(int request)
+        {
+            if (WorkerShip <= 0)
+            {
+                Console.WriteLine($"NO Worker on WorkerShip");
+                return 0;
+            }
+            else if (WorkerShip < request)
+            {
+                Console.WriteLine($"not enough Worker on WorkerShip");
+                int tempWorker = WorkerShip;
+                return tempWorker;
+            }
+            return request;
+        }
+
         public void ResetWorkerShip(int workerNum)
         {
             WorkerShip = workerNum;
