@@ -15,15 +15,18 @@ namespace PuertoRicoSpace
         {
             //從船長開始，依照上下家次序，將各項物資運上貨船，以運回舊大陸。任何人依據規則，只要有物資可以運上船，就必須要將物資運上船。物資運輸的輪替會一直重複，直到所有人都無法將物資運上船為止。
             Console.WriteLine($"\t{Name} Action");
-            List<int> playerStrategies = new List<int>();
+            List<Player> playerListFromRole = game.GetPlayerListFromRole(player);
+            List<bool> checkAllHasStrategy = new List<bool>();
+
             do
             {
-                foreach (Player p1 in game.GetPlayerListFromRole(player))
+                checkAllHasStrategy.Clear();
+                foreach (Player p1 in playerListFromRole)
                 {
                     List<TransportStrategy> Strategies = new List<TransportStrategy>();
                     foreach (CargoAbstract good in p1.Cargos)
                     {
-                        if (good.Qty <= 0)
+                        if (good.Qty <= 0)//貨物為0不用算策略
                             continue;
                         if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船
                         {
@@ -42,19 +45,22 @@ namespace PuertoRicoSpace
                     }
                     if (Strategies.Count == 0)
                     {
-                        playerStrategies.Add(0);
+                        checkAllHasStrategy.Add(false);
                         Console.WriteLine($"\t\t{p1.Name} No Strategies");
                         continue;
                     }
+
                     int topScore = Strategies.Max(y => y.Score);//找出得分最高的策略分數
                     Strategies = Strategies.OrderBy(x => Utilities.RndNum()).ToList();//打亂策略順序
                     TransportStrategy executionStrategy = Strategies.First(x => x.Score == topScore);
                     executionStrategy.Transport(p1, game);//執行分數最高的第一個策略
-
+                    checkAllHasStrategy.Add(true);
                     //船長能夠將物資運上船，則他在整段運輸物資的過程可以多得一分（特權）
                     CaptainPrivilege(p1,game, executionStrategy);
                 }
-            } while (playerStrategies.Where(x => x == 0).ToList().Count == game.PlayerNum);
+
+            } while (checkAllHasStrategy.Exists(x => x == true));
+
             game.Bank.CheckCargoShip();//檢查船是否裝滿貨物
 
             //從船長開始，每個玩家必須選擇手中餘下的商品中的一份留下（並非一種，而是只能留有一份(個/箱)），其餘歸還銀行
