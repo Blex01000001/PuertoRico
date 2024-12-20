@@ -11,7 +11,7 @@ namespace PuertoRicoSpace
         public override string Name => "Trader    ";
 
         public override void Action(Player player, PuertoRico game)
-        {
+        {//玩家可以不要買貨品嗎? 可以
             Console.WriteLine($"\t{Name} Action");
             foreach (Player player1 in game.GetPlayerListFromRole(player))
             {

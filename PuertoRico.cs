@@ -8,7 +8,7 @@ namespace PuertoRicoSpace
 {
     public  class PuertoRico
     {
-        public int PlayerNum { get; private set; }
+        public int PlayerNum { get; private set; }//玩家人數
         public Bank Bank { get; private set; }
         public List<Player> PlayerList { get; private set; }
         public List<Player> PlayerListByGovernor { get; private set; }
@@ -32,6 +32,10 @@ namespace PuertoRicoSpace
             while (!EndGame)
             {
                 Console.WriteLine($"==========ROUND {Round + 1}==========");
+                //選角色時
+                //初期：較不會選船長、交易員；多選開拓者、建築師、市長
+                //中期：
+                //後期：較不會選開拓者、礦工，多選工匠
 
                 AvailableRoles = AvailableRoles.OrderBy(x => Utilities.RndNum()).ToList();
                 foreach (Player player in PlayerListByGovernor)
@@ -79,6 +83,9 @@ namespace PuertoRicoSpace
 
 
         }
+        /// <summary>
+        /// 將EndGame設為TRUE，代表遊戲達到結束條件
+        /// </summary>
         public void CallGame()
         {
             EndGame = true;
@@ -119,11 +126,17 @@ namespace PuertoRicoSpace
             }
 
         }
+        /// <summary>
+        /// 換下一個人當總督
+        /// </summary>
         private void NextGovernor()
         {
             PlayerListByGovernor.Add(PlayerListByGovernor[0]);//將第一人移至最後
             PlayerListByGovernor.RemoveAt(0);//刪除第一人
         }
+        /// <summary>
+        /// 清除所有PlayerList裡Player所選的角色
+        /// </summary>
         private void ClearPlayerRoles()
         {
             foreach (Player player in PlayerList)

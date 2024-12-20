@@ -8,7 +8,7 @@ namespace PuertoRicoSpace
 {
     public class Craftsman : RoleAbstract//工匠
     {
-        //工匠因特權多的那一個資源，是要等所有人收成完再從銀行拿?還是在工匠收成時就可以直接拿?
+        //工匠因特權多的那一個資源，是要等所有人收成完再從銀行拿?還是在工匠收成時就可以直接拿? 等所有人收成完再從銀行拿
         public override string Name => "Craftsman ";
         public override void Action(Player player, PuertoRico game)
         {

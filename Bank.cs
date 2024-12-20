@@ -245,13 +245,24 @@ namespace PuertoRicoSpace
             CreateBuildings();
             CreateShip(playerNum);
 
-
+            
 
         }
+        /// <summary>
+        /// 增加貨物的數量
+        /// </summary>
+        /// <param name="cargo">貨物的Type</param>
+        /// <param name="qty">貨物的數量</param>
         public void AddCargo(Type cargo, int qty)
         {
             Cargos.Find(x => x.GetType() == cargo).Add(qty);
         }
+        /// <summary>
+        /// 從銀行拿取貨物，
+        /// </summary>
+        /// <param name="cargo">貨物的Type</param>
+        /// <param name="qty">貨物的數量</param>
+        /// <returns>返回可以拿多少</returns>
         public int GetCargo(Type cargo, int qty)
         {
             return Cargos.Find(x => x.GetType() == cargo).Get(qty);
@@ -260,6 +271,12 @@ namespace PuertoRicoSpace
         {
             return Cargos.Find(x => x.GetType() == cargo).Qty;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cargo"></param>
+        /// <param name="qty"></param>
+        /// <returns></returns>
         public int TryGetCargo(Type cargo, int qty)
         {
             return Cargos.Find(x => x.GetType() == cargo).TryGet(qty);

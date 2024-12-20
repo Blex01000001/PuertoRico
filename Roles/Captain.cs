@@ -28,7 +28,7 @@ namespace PuertoRicoSpace
                     {
                         if (good.Qty <= 0)//貨物為0不用算策略
                             continue;
-                        if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船
+                        if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船，可以不使用隱形船
                         {
                             Ship stealthShip = new Ship(99, "Stealth");
                             TransportStrategy strategy = CheckStrategy(stealthShip, good);

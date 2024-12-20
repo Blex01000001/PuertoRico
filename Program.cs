@@ -10,7 +10,7 @@ namespace PuertoRicoSpace
     {
         static void Main(string[] args)
         {
-            //manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2;
+            //manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2;
             List<PuertoRico> puertoRico = new List<PuertoRico>();
             for (int i = 0; i < 1; i++)
             {
