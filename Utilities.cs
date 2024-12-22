@@ -52,14 +52,16 @@ namespace PuertoRicoSpace
         /// <returns>返回List中的一個物件</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public static RoleAbstract RandomGetOne(List<RoleAbstract> list)
+        public static T RandomGetOne<T>(List<T> list)
         {
             if (list == null)
                 throw new ArgumentException("Cargos and weights must have the same number of elements.");
             List<int> weights = new List<int>();
-            foreach (RoleAbstract item in list)
+            foreach (T item in list)
             {
-                weights.Add(item.Priority);
+                item.GetType().GetProperty("Priority").GetValue(item, null);
+                weights.Add((int)item.GetType().GetProperty("Priority").GetValue(item, null));
+                //weights.Add(item.Priority);
             }
             //Random random = new Random(Guid.NewGuid().GetHashCode());
             int totalWeight = weights.Sum();
@@ -70,7 +72,7 @@ namespace PuertoRicoSpace
                 currentSum += weights[i];
                 if (randomValue <= currentSum)
                 {
-                    RoleAbstract selected = list[i];
+                    T selected = list[i];
                     //list.Remove(selected);
                     return selected;
                 }
@@ -82,24 +84,18 @@ namespace PuertoRicoSpace
         /// </summary>
         /// <param name="list"></param>
         /// <returns>返回一個新的list</returns>
-        public static List<RoleAbstract> RandomOrderByPriority(List<RoleAbstract> list)
+        public static List<T> RandomOrderByPriority<T>(List<T> list)
         {
 
-            List<RoleAbstract> newList = list.ToList();
-            List<RoleAbstract> Ordered = new List<RoleAbstract>();
-            //Console.WriteLine($"before Ori List Count: {list.Count}");
-            //Console.WriteLine($"before newList Count: {newList.Count}");
-            //Console.WriteLine($"before Ordered Count: {Ordered.Count}");
+            List<T> newList = list.ToList();
+            List<T> Ordered = new List<T>();
             int count = newList.Count;
             for (int i = 0; i < count; i++)
             {
-                RoleAbstract temp = RandomGetOne(newList);
+                T temp = RandomGetOne(newList);
                 Ordered.Add(temp);
                 newList.Remove(temp);
             }
-            //Console.WriteLine($"after Ori List Count: {list.Count}");
-            //Console.WriteLine($"after newList Count: {newList.Count}");
-            //Console.WriteLine($"after Ordered Count: {Ordered.Count}");
             return Ordered;
         }
 

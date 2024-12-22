@@ -19,10 +19,17 @@ namespace PuertoRicoSpace
         public int Score { get; protected set; }
         public int Level { get; protected set; }
         public string Scale { get; protected set; }
+        public int Priority { get; protected set; }
         protected BuildingAbstract()
         {
             Worker = 0; // 初始工作人數為 0
+            Priority = 10;
         }
+        public void SetPriority(int priority)
+        {
+            Priority = priority;
+        }
+
         public void ResetWorker()
         {
             Worker = 0;

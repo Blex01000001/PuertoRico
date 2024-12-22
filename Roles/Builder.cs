@@ -15,31 +15,37 @@ namespace PuertoRicoSpace
         public override void Action(Player player, PuertoRico game)
         {
             Console.WriteLine($"\t{Name} Action");
+            AdjustmentPriority(game.Bank.AvailableBuildings);
+            List<BuildingAbstract> priorityBuildings = Utilities.RandomOrderByPriority(game.Bank.AvailableBuildings);
+
             foreach (Player p1 in game.GetPlayerListFromRole(player))//由建築師本身開始，可以依照上下家順序興建一座建築物。建築師可以在興建任何建築物的時候少花一元（最少可以免費；特權）。
             {
-                for (int j = 0; j < game.Bank.AvailableBuildings.Count; j++)//逐一檢查每個建築
+                priorityBuildings = Utilities.RandomOrderByPriority(priorityBuildings);
+                for (int j = 0; j < priorityBuildings.Count; j++)//逐一檢查每個建築
                 {
-                    if (game.Bank.AvailableBuildings[j].Name == "PassBuilding")//選到PassBuilding代表該玩家pass掉買建築物
+                    BuildingAbstract tempBuilding = priorityBuildings[j];
+                    if (tempBuilding.Name == "PassBuilding")//選到PassBuilding代表該玩家pass掉買建築物
                     {
                         Console.WriteLine($"\t\t{p1.Name} PASS buy the building");
                         break;
                     }
-                    int containBuildingIndex = p1.GetAllBuildings().FindIndex(x => x.Name == game.Bank.AvailableBuildings[j].Name);
+                    int containBuildingIndex = p1.GetAllBuildings().FindIndex(x => x.Name == tempBuilding.Name);
                     if (containBuildingIndex >= 0)//檢查玩家有沒有重複的建築
                         continue;
-                    int buildingCost = CheckDiscount(p1, game.Bank.AvailableBuildings[j]);
+                    int buildingCost = CheckDiscount(p1, tempBuilding);
                     if (buildingCost < 0) //買不起就換下一個建築
                         continue;
                     //買得起就直接買
-                    Console.WriteLine($"\t\t{p1.Name} cost {buildingCost} buy the {game.Bank.AvailableBuildings[j].Name}");
-                    p1.BuildingList.Add(game.Bank.AvailableBuildings[j]);
-                    game.Bank.AvailableBuildings.Remove(game.Bank.AvailableBuildings[j]);
+                    Console.WriteLine($"\t\t{p1.Name} cost {buildingCost} buy the {tempBuilding.Name}");
+                    p1.BuildingList.Add(tempBuilding);
+                    priorityBuildings.Remove(tempBuilding);
+                    game.Bank.AvailableBuildings.Remove(tempBuilding);
                     //扣錢還給銀行
                     p1.DecreaseMoney(buildingCost);
                     game.Bank.AddMoney(buildingCost);
                     break;
                 }
-                game.Bank.RndAvailableBuildings();
+                //game.Bank.RndAvailableBuildings();
             }
         }
         private int CheckDiscount(Player player, BuildingAbstract building)
@@ -64,6 +70,18 @@ namespace PuertoRicoSpace
             if (player.Money >= buildingCostAfterDis)
                 return buildingCostAfterDis;
             return -1;
+        }
+        private void AdjustmentPriority(List<BuildingAbstract> Buildings)
+        {
+            foreach (var item in Buildings.FindAll(x => x.Name == "Quarry  "))
+            {
+                item.SetPriority(500);
+            }
+            foreach (var item in Buildings.FindAll(x => x.Name == "Wharf"))
+            {
+                item.SetPriority(1000);
+            }
+
         }
     }
 }

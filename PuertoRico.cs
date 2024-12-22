@@ -423,7 +423,7 @@ namespace PuertoRicoSpace
         }
         private void AdjustmentPriority()
         {
-            if(Round < 4)
+            if(Round < 3)
             {
                 AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(100);
                 AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(100);
@@ -432,7 +432,7 @@ namespace PuertoRicoSpace
                 AvailableRoles.Find(x => x.Name == "Prospector").SetPriority(30);
                 AvailableRoles.Find(x => x.Name == "Trader    ").SetPriority(5);
                 AvailableRoles.Find(x => x.Name == "Captain   ").SetPriority(5);
-            }else if (Round < 10)
+            }else if (Round < 12)
             {
                 AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(20);
                 AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(50);

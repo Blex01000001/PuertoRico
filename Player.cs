@@ -17,19 +17,6 @@ namespace PuertoRicoSpace
         public List<BuildingAbstract> FarmList { get; private set; }
         public List<BuildingAbstract> BuildingList { get; private set; }
         public bool UsedStealthShip { get; private set; }
-        public void UseStealthShip()
-        {
-            UsedStealthShip = false;
-        }
-        public void SetRole(string role)
-        {
-            Role = role;
-        }
-        public void RemoveRole()
-        {
-            Role = null;
-        }
-
         public Player(string name)
         {
             Cargos = new List<CargoAbstract>();
@@ -43,6 +30,23 @@ namespace PuertoRicoSpace
             Cargos.Add(new Indigo(0));
             this.Name = name;
         }
+        public void ResetStealthShip()
+        {
+            UsedStealthShip = true;
+        }
+        public void UseStealthShip()
+        {
+            UsedStealthShip = false;
+        }
+        public void SetRole(string role)
+        {
+            Role = role;
+        }
+        public void RemoveRole()
+        {
+            Role = null;
+        }
+
         public void IncreaseScore(int qty)
         {
             Score += qty;

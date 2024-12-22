@@ -15,7 +15,7 @@ namespace PuertoRicoSpace
             do
             {
                 PuertoRico game = new PuertoRico(5);
-                if(game.TotalScore > 10)
+                if(game.TotalScore > 70)
                 {
                     puertoRico.Add(game);
                 }
@@ -25,10 +25,15 @@ namespace PuertoRicoSpace
             foreach (PuertoRico game in puertoRico)
             {
                 int total = 0;
-                foreach (int score in game.PlayerList.Select(x => x.Score))
+                foreach (Player player in game.PlayerList)
                 {
-                    total += score;
-                    Console.Write($"{score}\t");
+                    total += player.Score;
+                    Console.Write($"{player.Score}");
+                    if(player.BuildingList.Where(x => x.Name == "Wharf").ToList().Count > 0)
+                    {
+                        Console.Write($"W");
+                    }
+                    Console.Write($"\t");
                 }
                 Console.Write($"{game.Round}\t{game.TotalScore}\t{game.ElapsedTime.ToString("s\\.fffff")}");
                 Console.Write("\n");

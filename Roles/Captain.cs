@@ -17,7 +17,7 @@ namespace PuertoRicoSpace
             Console.WriteLine($"\t{Name} Action");
             List<Player> playerListFromRole = game.GetPlayerListFromRole(player);
             List<bool> checkAllHasStrategy = new List<bool>();
-
+            ResetPlayerStealthShip(game);
             do
             {
                 checkAllHasStrategy.Clear();
@@ -161,6 +161,14 @@ namespace PuertoRicoSpace
                 p1.ShowCargo();
             }
         }
+        private void ResetPlayerStealthShip(PuertoRico game)
+        {
+            foreach (Player player in game.PlayerList)
+            {
+                player.ResetStealthShip();
+            }
+        }
+
     }
     internal class TransportStrategy
     {

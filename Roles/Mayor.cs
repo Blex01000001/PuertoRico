@@ -29,7 +29,8 @@ namespace PuertoRicoSpace
             int totalBuildingEmptyCircle = 0;
             foreach (Player p2 in game.GetPlayerListFromRole(player))//所有人必須將得到的移民放在地圖上任何有圈圈的地方（包括農田方塊或者建築物上），而之前部署的任何移民，可以在此時重新部署（但仍然只要有空圈圈且有空間的移民就要部署）
             {
-                List<BuildingAbstract> EmptyCircleList = p2.GetEmptyCircleList();
+                
+                List<BuildingAbstract> EmptyCircleList = Utilities.RandomOrderByPriority(p2.GetEmptyCircleList());
                 p2.ClearFarmWorker();
                 p2.ClearFactoryWorker();
                 for (int i = 0; i < p2.Worker; i++)
