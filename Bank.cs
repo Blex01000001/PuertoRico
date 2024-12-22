@@ -19,6 +19,7 @@ namespace PuertoRicoSpace
         public List<BuildingAbstract> AvailableFarms  { get; internal set; }
         public List<BuildingAbstract> HideFarms  { get; internal set; }
         public List<BuildingAbstract> AvailableBuildings { get; private set; }
+        public List<BuildingAbstract> Buildings { get; private set; }
         public List<Ship> Ships { get; private set; }
 
         public void SetUp(int playerNum)
@@ -223,6 +224,7 @@ namespace PuertoRicoSpace
             //空的建築物，當作PASS
             PassBuilding passBuilding = new PassBuilding();
             AvailableBuildings.Add(passBuilding);
+            Buildings = AvailableBuildings.ToList();
 
             AvailableBuildings = AvailableBuildings.OrderBy(x => Utilities.RndNum()).ToList();
         }

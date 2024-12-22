@@ -15,7 +15,7 @@ namespace PuertoRicoSpace
         public override void Action(Player player, PuertoRico game)
         {
             Console.WriteLine($"\t{Name} Action");
-            AdjustmentPriority(game.Bank.AvailableBuildings);
+            AdjustmentPriority(game);
             List<BuildingAbstract> priorityBuildings = Utilities.RandomOrderByPriority(game.Bank.AvailableBuildings);
 
             foreach (Player p1 in game.GetPlayerListFromRole(player))//由建築師本身開始，可以依照上下家順序興建一座建築物。建築師可以在興建任何建築物的時候少花一元（最少可以免費；特權）。
@@ -71,17 +71,24 @@ namespace PuertoRicoSpace
                 return buildingCostAfterDis;
             return -1;
         }
-        private void AdjustmentPriority(List<BuildingAbstract> Buildings)
+        private void AdjustmentPriority(PuertoRico game)
         {
-            foreach (var item in Buildings.FindAll(x => x.Name == "Quarry  "))
+            foreach (var item in game.Bank.AvailableBuildings.FindAll(x => x.Name == "Quarry  "))
             {
                 item.SetPriority(500);
             }
-            foreach (var item in Buildings.FindAll(x => x.Name == "Wharf"))
+            foreach (var item in game.Bank.AvailableBuildings.FindAll(x => x.Name == "Wharf"))
             {
                 item.SetPriority(1000);
             }
-
+            if(game.Bank.Worker < 10)
+            {
+                game.Bank.Buildings.Find(x => x.Name == "Guildhall").SetPriority(1000);
+                game.Bank.Buildings.Find(x => x.Name == "Residence").SetPriority(1000);
+                game.Bank.Buildings.Find(x => x.Name == "Fortress").SetPriority(1000);
+                game.Bank.Buildings.Find(x => x.Name == "Customshouse").SetPriority(1000);
+                game.Bank.Buildings.Find(x => x.Name == "Cityhall").SetPriority(1000);
+            }
         }
     }
 }
