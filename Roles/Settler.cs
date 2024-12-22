@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
-{    //選擇開拓者的玩家可以不拿郊區方塊嗎?
+{   //選擇開拓者的玩家可以不拿郊區方塊嗎?
     //其他玩家可以不拿郊區方塊嗎?
 
     public class Settler : RoleAbstract //開拓者
@@ -34,14 +34,12 @@ namespace PuertoRicoSpace
                 else if (p1.Role == "Settler" && game.Bank.QuarryFields.Count > 0 && player.FarmList.Count < 12)
                 {
                     selectedBuilding = GetQuarry(p1, game);
-                    //continue;
                 }
                 //建築舍作用時，當開拓者出現時，玩家猶如開拓者一般地可以選擇拿採礦場（當然要採礦場還有剩的時候）或者普通的農田空格。
                 else if (ConstructionhutRules && game.Bank.QuarryFields.Count > 0 && player.FarmList.Count < 12)
                 {
                     selectedBuilding = GetQuarry(p1, game);
 
-                    //continue;
                 }else{
                     selectedBuilding = GetField(p1, game);
                 }

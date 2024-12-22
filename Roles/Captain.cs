@@ -28,6 +28,8 @@ namespace PuertoRicoSpace
                     {
                         if (good.Qty <= 0)//貨物為0不用算策略
                             continue;
+                        Console.WriteLine($"\t\t{p1.Name} p1.UsedStealthShip: {p1.UsedStealthShip}");
+                        Console.WriteLine($"\t\t{p1.Name} p1.CheckBuildingWithWorker: {Utilities.CheckBuildingWithWorker(p1, typeof(Wharf))}");
                         if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船，可以不使用隱形船
                         {
                             Ship stealthShip = new Ship(99, "Stealth");
@@ -38,11 +40,14 @@ namespace PuertoRicoSpace
                         }
                         foreach (Ship ship in game.Bank.Ships)
                         {
+                            if (ship.Quantity == ship.MaxCargoQuantity)
+                                continue;
                             TransportStrategy strategy = CheckStrategy(ship, good);
                             if (strategy != null)
                                 Strategies.Add(strategy);
                         }
                     }
+                    Console.Write($"\t\tStrategies.Count: {Strategies.Count}");
                     if (Strategies.Count == 0)
                     {
                         checkAllHasStrategy.Add(false);
@@ -66,6 +71,12 @@ namespace PuertoRicoSpace
             //從船長開始，每個玩家必須選擇手中餘下的商品中的一份留下（並非一種，而是只能留有一份(個/箱)），其餘歸還銀行
             Console.WriteLine($"\tCheck Cargo Spoilage:");
             CheckCargoSpoilage(player, game);
+
+            if (game.Bank.Score <= 0)//分數片不夠，則遊戲結束事件發生
+            {
+                Console.WriteLine("\n>>>>分數片不夠，遊戲將在角色輪轉後結束<<<<\n");
+                game.CallGame();
+            }
 
 
         }
@@ -154,16 +165,15 @@ namespace PuertoRicoSpace
     internal class TransportStrategy
     {
         public int Score { get; private set; }
-        public bool IsStealth { get; private set; }
-        private CargoAbstract _good;
-        private Ship _ship;
-        private bool _isStealth = false;
+        public bool IsStealth { get ; private set; }
+        public CargoAbstract _good;
+        public Ship _ship;
         public TransportStrategy(Ship ship, CargoAbstract good)
         {
             this._good = good;
             this._ship = ship;
             if (ship.Type == "Stealth")
-                _isStealth = true;
+                IsStealth = true;
             if (ship.Cargo == null)//船如果是空的，分數就是貨物的數量
             {
                 ship.SetCargo(good.Name);
@@ -177,11 +187,20 @@ namespace PuertoRicoSpace
         }
         public void Transport(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t\t{player.Name} Transport {Score} {_good.Name} to the ship({_ship.Type})");
+            Console.WriteLine($"\t\t{player.Name} Transport {Score} {_good.Name} to the ship({_ship.GetHexHash()})({_ship.Type})");
             player.DecreaseCargo(_good.Name, Score);
             player.IncreaseScore(Score);
             _ship.AddQuantity(Score);
             game.Bank.GetScore(Score);
+            //ShowStrategyInfo(this);
+        }
+        public void ShowStrategyInfo(TransportStrategy strategy)
+        {
+            Console.WriteLine($"\t\t\tScore: {strategy.Score}");
+            Console.WriteLine($"\t\t\tCargo: {strategy._good.Name}");
+            Console.WriteLine($"\t\t\tCargo Qty: {strategy._good.Qty}");
+            Console.WriteLine($"\t\t\tship MaxCargoQuantity: {strategy._ship.MaxCargoQuantity}");
+            Console.WriteLine($"\t\t\tship.Quantity: {strategy._ship.Quantity}");
         }
     }
 

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
@@ -15,12 +18,16 @@ namespace PuertoRicoSpace
         public List<RoleAbstract> AvailableRoles { get; private set; }//角色List
         public List<RoleAbstract> SelectedRoles { get; private set; }
         public List<CargoAbstract> Shop { get; private set; }//商店四格商品的空間
-
+        public TimeSpan ElapsedTime { get; private set; }//遊戲經過時間
+        public int Round { get; private set; }
+        public int TotalScore { get; private set; }
         private bool EndGame = false;
-        private int Round = 0;
 
         public PuertoRico(int playerNum)
         {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+           
             this.PlayerNum = playerNum;
             Bank = new Bank();
             Shop = new List<CargoAbstract>();
@@ -36,33 +43,42 @@ namespace PuertoRicoSpace
                 //初期：較不會選船長、交易員；多選開拓者、建築師、市長
                 //中期：
                 //後期：較不會選開拓者、礦工，多選工匠
-
-                AvailableRoles = AvailableRoles.OrderBy(x => Utilities.RndNum()).ToList();
+                AdjustmentPriority();
+                List<RoleAbstract> priorityRoles = Utilities.RandomOrderByPriority(AvailableRoles);
+                //for (int ii = 0; ii < 20; ii++)
+                //{
+                //    priorityRoles = Utilities.RandomOrderByPriority(AvailableRoles);
+                //    foreach (RoleAbstract role in priorityRoles)
+                //    {
+                //        Console.Write($"{role.Name} ");
+                //    }
+                //    Console.Write($"\n");
+                //}
                 foreach (Player player in PlayerListByGovernor)
                 {
-                    Console.WriteLine($"{player.Name} select {AvailableRoles[0].Name}");
-                    player.SetRole(AvailableRoles[0].Name);
-                    if (AvailableRoles[0].Money > 0)//玩家所選的角色牌上如果有錢就加到玩家裡
+                    Console.WriteLine($"{player.Name} select {priorityRoles[0].Name}");
+                    player.SetRole(priorityRoles[0].Name);
+                    if (priorityRoles[0].Money > 0)//玩家所選的角色牌上如果有錢就加到玩家裡
                     {
-                        player.IncreaseMoney(AvailableRoles[0].Money);
-                        Console.WriteLine($"\t{player.Name} get {AvailableRoles[0].Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
-                        AvailableRoles[0].ResetMoney();//角色牌所累積的錢歸零
+                        player.IncreaseMoney(priorityRoles[0].Money);
+                        Console.WriteLine($"\t{player.Name} get {priorityRoles[0].Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
+                        priorityRoles[0].ResetMoney();//角色牌所累積的錢歸零
                     }
-                    AvailableRoles[0].Action(player, this);
-                    SelectedRoles.Add(AvailableRoles[0]);
-                    AvailableRoles.Remove(AvailableRoles[0]);
+                    priorityRoles[0].Action(player, this);
+                    //SelectedRoles.Add(priorityRoles[0]);
+                    priorityRoles.Remove(priorityRoles[0]);
                 }
 
                 Console.WriteLine($"==========ROUND {Round + 1} END==========");
 
-                foreach (RoleAbstract roles in AvailableRoles)//沒有被選到的角色的錢+1
+                foreach (RoleAbstract roles in priorityRoles)//沒有被選到的角色的錢+1
                 {
                     //Console.WriteLine($"remaining roles: {roles.Name} Money +1");
                     roles.AddMoney(Bank.GetMoney(1));
                 }
 
-                AvailableRoles.AddRange(SelectedRoles);//將被選過的角色加回去AvailableRoles
-                SelectedRoles.RemoveAll(x => true);
+                //AvailableRoles.AddRange(SelectedRoles);//將被選過的角色加回去AvailableRoles
+                //SelectedRoles.RemoveAll(x => true);
 
                 ShowAvailableRolesStatus();
                 //ShowAvailableFarms();
@@ -79,9 +95,11 @@ namespace PuertoRicoSpace
 
                 Round++;
             }
+            CalculateScore();
 
-
-
+            timer.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            ElapsedTime = timer.Elapsed;
         }
         /// <summary>
         /// 將EndGame設為TRUE，代表遊戲達到結束條件
@@ -314,7 +332,7 @@ namespace PuertoRicoSpace
             Console.Write("\n");
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"Ship({ship.GetHexHash()})\t");
+                Console.Write($"Ship({ship.GetHexHash()})({ship.Quantity}/{ship.MaxCargoQuantity})\t");
             }
             Console.Write("\n");
             foreach (Ship ship in Bank.Ships)
@@ -349,6 +367,91 @@ namespace PuertoRicoSpace
                 Shop.Clear();
             }
         }
+        private void CalculateScore()
+        {
+            foreach (Player player in PlayerList)
+            {
+                CheckBuildingScore(player);
+                int buildingScore = player.GetAllBuildings().Where(x => x.Type == "Building").Sum(x => x.Score);
+                player.IncreaseScore(buildingScore);
+                TotalScore += player.Score;
+            }
+        }
+        private void CheckBuildingScore(Player player)
+        {
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Guildhall)))//商會，若商會作用，最後計算點數時，大型生產廠房多計兩分，小型生產廠房多計一分。
+            {
+                int smallCount = player.GetAllBuildings().Where(x => x.Scale == "Small").ToList().Count;
+                player.IncreaseScore(smallCount);
+                int largeCount = player.GetAllBuildings().Where(x => x.Scale == "Large").ToList().Count;
+                player.IncreaseScore(largeCount * 2);
+            }
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Residence)))//府邸，若居民區作用，最後計算點數時，若郊區空格占滿九格以下，多計四分；占滿十格，多計五分；十一格六分；十二格都占滿多計七分。
+            {
+                int FarmCount = player.GetAllBuildings().Where(x => x.Type == "Farm").ToList().Count;
+                switch (FarmCount)
+                {
+                    case int n when (n  <= 9):
+                        player.IncreaseScore(4);
+                        break;
+                    case 10:
+                        player.IncreaseScore(5);
+                        break;
+                    case 11:
+                        player.IncreaseScore(6);
+                        break;
+                    case 12:
+                        player.IncreaseScore(7);
+                        break;
+                }
+            }
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Fortress)))//堡壘，若要塞作用，最後計算點數時，統計遊戲盤上所有移民總數，無條件舍去每三移民多計一分。
+            {
+                int score = (int)(player.Worker / 3);
+                player.IncreaseScore(score);
+            }
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Customshouse)))//海關，若海關作用，最後計算點數時，統計（運物資上船得到的）得分方塊總分，無條件舍去每四分多計一分。
+            {
+                int score = (int)(player.Score / 4);
+                player.IncreaseScore(score);
+            }
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Cityhall)))//市政廳，若市政廳作用，最後計算點數時，每座紫色的特殊功能建築（不論大小）多計一分。
+            {
+                int buildingScore = player.GetAllBuildings().Where(x => x.Type == "Building").ToList().Count;
+                player.IncreaseScore(buildingScore);
+            }
+        }
+        private void AdjustmentPriority()
+        {
+            if(Round < 4)
+            {
+                AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(100);
+                AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(100);
+                AvailableRoles.Find(x => x.Name == "Mayor     ").SetPriority(70);
+                AvailableRoles.Find(x => x.Name == "Craftsman ").SetPriority(50);
+                AvailableRoles.Find(x => x.Name == "Prospector").SetPriority(30);
+                AvailableRoles.Find(x => x.Name == "Trader    ").SetPriority(5);
+                AvailableRoles.Find(x => x.Name == "Captain   ").SetPriority(5);
+            }else if (Round < 10)
+            {
+                AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(20);
+                AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(50);
+                AvailableRoles.Find(x => x.Name == "Mayor     ").SetPriority(50);
+                AvailableRoles.Find(x => x.Name == "Craftsman ").SetPriority(100);
+                AvailableRoles.Find(x => x.Name == "Prospector").SetPriority(10);
+                AvailableRoles.Find(x => x.Name == "Trader    ").SetPriority(50);
+                AvailableRoles.Find(x => x.Name == "Captain   ").SetPriority(50);
+            }else
+            {
+                AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(10);
+                AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(10);
+                AvailableRoles.Find(x => x.Name == "Mayor     ").SetPriority(30);
+                AvailableRoles.Find(x => x.Name == "Craftsman ").SetPriority(80);
+                AvailableRoles.Find(x => x.Name == "Prospector").SetPriority(10);
+                AvailableRoles.Find(x => x.Name == "Trader    ").SetPriority(50);
+                AvailableRoles.Find(x => x.Name == "Captain   ").SetPriority(50);
+            }
 
+        }
     }
 }

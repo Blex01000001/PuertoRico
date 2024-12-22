@@ -21,6 +21,28 @@ namespace PuertoRicoSpace
         public List<BuildingAbstract> AvailableBuildings { get; private set; }
         public List<Ship> Ships { get; private set; }
 
+        public void SetUp(int playerNum)
+        {
+            Cargos = new List<CargoAbstract>();
+            QuarryFields = new List<BuildingAbstract>();
+            TrushFarms = new List<BuildingAbstract>();
+            AvailableFarms = new List<BuildingAbstract>();
+            HideFarms = new List<BuildingAbstract>();
+            AvailableBuildings = new List<BuildingAbstract>();
+
+            CreateCargos();
+            CreateWorkerToBank(playerNum);
+            WorkerShip = playerNum;
+            Money = 86;
+            SetScore(playerNum);
+            CreateFarms();
+            CreateBuildings();
+            CreateShip(playerNum);
+
+
+
+        }
+
         private void CreateCargos()
         {
             Cargos.Add(new Corn(10));
@@ -225,27 +247,6 @@ namespace PuertoRicoSpace
                 Ships.Add(new Ship(7, "Normal"));
                 Ships.Add(new Ship(8, "Normal"));
             }
-
-        }
-        public void SetUp(int playerNum)
-        {
-            Cargos = new List<CargoAbstract>();
-            QuarryFields = new List<BuildingAbstract>();
-            TrushFarms = new List<BuildingAbstract>();
-            AvailableFarms = new List<BuildingAbstract>();
-            HideFarms = new List<BuildingAbstract>();
-            AvailableBuildings = new List<BuildingAbstract>();
-
-            CreateCargos();
-            CreateWorkerToBank(playerNum);
-            WorkerShip = playerNum;
-            Money = 86;
-            SetScore(playerNum);
-            CreateFarms();
-            CreateBuildings();
-            CreateShip(playerNum);
-
-            
 
         }
         /// <summary>
