@@ -1,7 +1,9 @@
-﻿using System;
+﻿//using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -9,11 +11,13 @@ namespace PuertoRicoSpace
 {
     public abstract class CargoAbstract
     {
+        [JsonInclude]
         public abstract string Name { get; }
+        [JsonInclude]
         public int Qty { get; private set; } // 通用的屬性，由基類直接管理
-        protected CargoAbstract(int qty)
+        protected CargoAbstract()
         {
-            Qty = qty; // 初始化商品數量
+            Qty = 0; // 初始化商品數量
         }
         public void Add(int qty)
         {
@@ -58,30 +62,30 @@ namespace PuertoRicoSpace
     public class Coffee : CargoAbstract
     {
         public override string Name => "Coffee";
-        public Coffee(int qty) : base(qty) { }
+        public Coffee() { }
     }
     public class Tobacco : CargoAbstract
     {
         public override string Name => "Tobacco";
-        public Tobacco(int qty) : base(qty) { }
+        public Tobacco() { }
     }
 
     public class Corn : CargoAbstract
     {
         public override string Name => "Corn";
-        public Corn(int qty) : base(qty) { }
+        public Corn() { }
     }
 
     public class Sugar : CargoAbstract
     {
         public override string Name => "Sugar";
-        public Sugar(int qty) : base(qty) { }
+        public Sugar() { }
     }
 
     public class Indigo : CargoAbstract
     {
         public override string Name => "Indigo";
-        public Indigo(int qty) : base(qty) { }
+        public Indigo() { }
     }
 
 }

@@ -21,7 +21,7 @@ namespace PuertoRicoSpace
         public List<BuildingAbstract> AvailableBuildings { get; private set; }
         public List<BuildingAbstract> Buildings { get; private set; }
         public List<Ship> Ships { get; private set; }
-
+        public Bank() { }
         public void SetUp(int playerNum)
         {
             Cargos = new List<CargoAbstract>();
@@ -46,11 +46,16 @@ namespace PuertoRicoSpace
 
         private void CreateCargos()
         {
-            Cargos.Add(new Corn(10));
-            Cargos.Add(new Sugar(11));
-            Cargos.Add(new Coffee(9));
-            Cargos.Add(new Tobacco(9));
-            Cargos.Add(new Indigo(11));
+            Cargos.Add(new Corn());
+            Cargos.Add(new Sugar());
+            Cargos.Add(new Coffee());
+            Cargos.Add(new Tobacco());
+            Cargos.Add(new Indigo());
+            Cargos.Find(x => x.GetType() == typeof(Corn)).Add(10);
+            Cargos.Find(x => x.GetType() == typeof(Sugar)).Add(11);
+            Cargos.Find(x => x.GetType() == typeof(Coffee)).Add(9);
+            Cargos.Find(x => x.GetType() == typeof(Tobacco)).Add(9);
+            Cargos.Find(x => x.GetType() == typeof(Indigo)).Add(11);
         }
         private void CreateWorkerToBank(int playerNum)
         {

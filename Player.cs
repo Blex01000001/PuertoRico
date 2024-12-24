@@ -1,33 +1,46 @@
-﻿using System;
+﻿//using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
 {
     public class Player
     {
+        [JsonInclude]
         public string Name { get; private set; }
+        [JsonInclude]
         public int Money { get; private set; }
+        [JsonInclude] 
         public int Worker { get; private set; }
+        [JsonInclude]
         public int Score { get; private set; }
+        [JsonInclude]
         public string Role { get; private set; }
+        //[JsonConverter(typeof(CargoConverter))]
+        [JsonInclude][JsonConverter(typeof(CargoListConverter))]
         public List<CargoAbstract> Cargos { get; private set; }
+        //[JsonInclude]
         public List<BuildingAbstract> FarmList { get; private set; }
+        //[JsonInclude]
         public List<BuildingAbstract> BuildingList { get; private set; }
+        [JsonInclude]
         public bool UsedStealthShip { get; private set; }
+        //[JsonConstructor]
         public Player(string name)
         {
             Cargos = new List<CargoAbstract>();
             FarmList = new List<BuildingAbstract>();
             BuildingList = new List<BuildingAbstract>();
             UsedStealthShip = true;
-            Cargos.Add(new Corn(0));
-            Cargos.Add(new Sugar(0));
-            Cargos.Add(new Coffee(0));
-            Cargos.Add(new Tobacco(0));
-            Cargos.Add(new Indigo(0));
+            Cargos.Add(new Corn());
+            Cargos.Add(new Sugar());
+            Cargos.Add(new Coffee());
+            Cargos.Add(new Tobacco());
+            Cargos.Add(new Indigo());
             this.Name = name;
         }
         public void ResetStealthShip()

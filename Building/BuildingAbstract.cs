@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace PuertoRicoSpace
 {
-    public class BuildingAbstract
+    public  class BuildingAbstract
     {
         public string Name { get; protected set; }
         public string Industry { get; protected set; }
