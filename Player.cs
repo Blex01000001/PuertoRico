@@ -20,12 +20,11 @@ namespace PuertoRicoSpace
         public int Score { get; private set; }
         [JsonInclude]
         public string Role { get; private set; }
-        //[JsonConverter(typeof(CargoConverter))]
         [JsonInclude][JsonConverter(typeof(CargoListConverter))]
         public List<CargoAbstract> Cargos { get; private set; }
-        //[JsonInclude]
+        [JsonInclude][JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> FarmList { get; private set; }
-        //[JsonInclude]
+        [JsonInclude][JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> BuildingList { get; private set; }
         [JsonInclude]
         public bool UsedStealthShip { get; private set; }

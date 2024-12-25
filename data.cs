@@ -16,7 +16,6 @@ namespace PuertoRico
         public int Round { get;  set; }
         public int TotalScore { get;  set; }
         public List<Player> PlayerList { get; set; }
-
-
+        public Bank Bank { get; set; }
     }
 }

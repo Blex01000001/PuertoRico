@@ -36,6 +36,7 @@ namespace PuertoRicoSpace
                 _data.Round = game.Round;
                 _data.TotalScore = game.TotalScore;
                 _data.PlayerList = game.PlayerList;
+                _data.Bank = game.Bank;
 
                 Console.WriteLine($"**player name: {_data.PlayerList[0].Name}");
                 Console.WriteLine($"**player worker: {_data.PlayerList[0].Worker}");
@@ -72,22 +73,27 @@ namespace PuertoRicoSpace
             foreach (Player player in da.PlayerList)
             {
                 Console.WriteLine($"player name: {player.Name}");
+                Console.Write("cargo:");
                 foreach (var cargo in player.Cargos)
                 {
-                    Console.WriteLine($"\tcargo name: {cargo.Name}  Qty: {cargo.Qty}");
+                    Console.Write($"{cargo.Name}  Qty: {cargo.Qty} ");
                 }
-
+                Console.Write("\n");
+                Console.Write("farm list: ");
+                foreach (var farm in player.FarmList)
+                {
+                    Console.Write($"{farm.Name}({farm.Worker}/{farm.MaxWorker}) ");
+                }
+                Console.Write("\n");
+                Console.Write("building list: ");
+                foreach (var building in player.BuildingList)
+                {
+                    Console.Write($"{building.Name}({building.Worker}/{building.MaxWorker}) ");
+                }
+                Console.Write("\n");
             }
 
 
-            Console.WriteLine($"PlayerList[0].Cargos[1].name: {da.PlayerList[1].Cargos[1].Name}");
-            Console.WriteLine($"PlayerList[0].Cargos[1].Qty: {da.PlayerList[1].Cargos[1].Qty}");
-            Console.WriteLine($"PlayerList[0].Cargos[2].name: {da.PlayerList[2].Cargos[2].Name}");
-            Console.WriteLine($"PlayerList[0].Cargos[2].Qty: {da.PlayerList[2].Cargos[2].Qty}");
-            Console.WriteLine($"PlayerList[0].Cargos[3].name: {da.PlayerList[3].Cargos[3].Name}");
-            Console.WriteLine($"PlayerList[0].Cargos[3].Qty: {da.PlayerList[3].Cargos[3].Qty}");
-            Console.WriteLine($"PlayerList[0].Cargos[4].name: {da.PlayerList[4].Cargos[4].Name}");
-            Console.WriteLine($"PlayerList[0].Cargos[4].Qty: {da.PlayerList[4].Cargos[4].Qty}");
 
             Console.WriteLine($"PlayerList[0].name: {da.PlayerList[0].Name}");
             Console.WriteLine($"PlayerList[0].money: {da.PlayerList[0].Money}");

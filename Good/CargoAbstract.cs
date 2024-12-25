@@ -58,7 +58,6 @@ namespace PuertoRicoSpace
         }
 
     }
-
     public class Coffee : CargoAbstract
     {
         public override string Name => "Coffee";

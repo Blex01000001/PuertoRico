@@ -1,43 +1,62 @@
-﻿using System;
+﻿using PuertoRicoSpace;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace PuertoRicoSpace
 {
-    public  class BuildingAbstract
+    public abstract class BuildingAbstract
     {
+        //[JsonInclude]
         public string Name { get; protected set; }
         public string Industry { get; protected set; }
         public string Type { get; protected set; }
+        public string Scale { get; protected set; }
         public int Worker { get; protected set; }
         public int MaxWorker { get; protected set; }
         public int Cost { get; protected set; }
         public int Score { get; protected set; }
         public int Level { get; protected set; }
-        public string Scale { get; protected set; }
         public int Priority { get; protected set; }
         protected BuildingAbstract()
         {
             Worker = 0; // 初始工作人數為 0
             Priority = 10;
         }
-        public void SetPriority(int priority)
+        public void SetJson
+        (
+            string name = null,
+            string industry = null,
+            string type = null,
+            string scale = null,
+            int worker = 0,
+            int maxworker = 0,
+            int cost = 0,
+            int score = 0,
+            int level = 0,
+            int priority = 0
+        )
         {
+            Name = name;
+            Industry = industry;
+            Type = type;
+            Scale = scale;
+            Worker = worker;
+            MaxWorker = maxworker;
+            Cost = cost;
+            Score = score;
+            Level = level;
             Priority = priority;
         }
-
-        public void ResetWorker()
-        {
-            Worker = 0;
-        }
-        public void IncreaseWorker(int qty)
-        {
-            Worker += qty;
-        }
+        public void SetPriority(int priority) => Priority = priority;
+        public void ResetWorker() => Worker = 0;
+        public void IncreaseWorker(int qty) => Worker += qty;
     }
     //5種大型特殊建築物（占2個建築物空間）各一
     //12種小型特殊建物（占1個建築物空間）各二
@@ -45,13 +64,13 @@ namespace PuertoRicoSpace
 
     public class QuarryFarm : BuildingAbstract
     {
-        public QuarryFarm() : base()
+        public QuarryFarm()
         {
-            Name = "Quarry  ";
+            Name = "QuarryFarm";
             Industry = "Quarry";
             Type = "Farm";
             MaxWorker = 1;
-
+            Priority = 500;
         }
     }
 
@@ -59,11 +78,11 @@ namespace PuertoRicoSpace
     {
         public CoffeeFarm()
         {
-            Name = "Coffee  ";
+            Name = "CoffeeFarm";
             Industry = "Coffee";
             Type = "Farm";
             MaxWorker = 1;
-
+            Priority = 10;
         }
     }
 
@@ -71,11 +90,11 @@ namespace PuertoRicoSpace
     {
         public TobaccoFarm()
         {
-            Name = "Tobacco ";
+            Name = "TobaccoFarm";
             Industry = "Tobacco";
             Type = "Farm";
             MaxWorker = 1;
-
+            Priority = 10;
         }
     }
 
@@ -83,10 +102,11 @@ namespace PuertoRicoSpace
     {
         public CornFarm()
         {
-            Name = "Corn    ";
+            Name = "CornFarm";
             Industry = "Corn";
             Type = "Farm";
             MaxWorker = 1;
+            Priority = 10;
         }
 
     }
@@ -95,10 +115,11 @@ namespace PuertoRicoSpace
     {
         public SugarFarm()
         {
-            Name = "Sugar   ";
+            Name = "SugarFarm";
             Industry = "Sugar";
             Type = "Farm";
             MaxWorker = 1;
+            Priority = 10;
         }
 
     }
@@ -107,10 +128,11 @@ namespace PuertoRicoSpace
     {
         public IndigoFarm()
         {
-            Name = "Indigo  ";
+            Name = "IndigoFarm";
             Industry = "Indigo";
             Type = "Farm";
             MaxWorker = 1;
+            Priority = 10;
         }
 
     }
@@ -118,66 +140,71 @@ namespace PuertoRicoSpace
     //生廠廠房
     //
     /// <summary>
-    /// 染料廠，有分大小
+    /// 小染料廠
     /// </summary>
-    public class IndigoPlant : BuildingAbstract
+    public class IndigoPlant_Small : BuildingAbstract
     {
-        public IndigoPlant(int smallLarge)
+        public IndigoPlant_Small()
         {
-            if (smallLarge == 0)
-            {
-                Level = 1;
-                Scale = "Small";
-                Name = "IndigoPlant(Small)";
-                Industry = "Indigo";
-                Type = "Building";
-                Score = 1;
-                Cost = 1;
-                MaxWorker = 1;
-            }
-            else if (smallLarge == 1)
-            {
-                Level = 2;
-                Scale = "Large";
-                Name = "IndigoPlant(Large)";
-                Industry = "Indigo";
-                Type = "Building";
-                Score = 2;
-                Cost = 3;
-                MaxWorker = 3;
-            }
+            Level = 1;
+            Scale = "Small";
+            Name = "IndigoPlant(Small)";
+            Industry = "Indigo";
+            Type = "Building";
+            Score = 1;
+            Cost = 1;
+            MaxWorker = 1;
         }
     }
     /// <summary>
-    /// 蔗糖廠，有分大小
+    /// 大染料廠
     /// </summary>
-    public class SugarMill : BuildingAbstract
+    public class IndigoPlant_Large : BuildingAbstract
     {
-        public SugarMill(int smallLarge)
+        public IndigoPlant_Large()
         {
-            if (smallLarge == 0)
-            {
-                Level = 1;
-                Scale = "Small";
-                Name = "SugarMill(Small)";
-                Industry = "Sugar";
-                Type = "Building";
-                Score = 1;
-                Cost = 2;
-                MaxWorker = 1;
-
-            }
-            else if (smallLarge == 1)
-            {
-                Level = 2;
-                Scale = "Large";
-                Name = "SugarMill(Large)";
-                Industry = "Sugar";
-                Type = "Building";
-                Score = 2;
-                Cost = 4;
-                MaxWorker = 3;
-            }
+            Level = 2;
+            Scale = "Large";
+            Name = "IndigoPlant(Large)";
+            Industry = "Indigo";
+            Type = "Building";
+            Score = 2;
+            Cost = 3;
+            MaxWorker = 3;
+        }
+    }
+    /// <summary>
+    /// 小蔗糖廠
+    /// </summary>
+    public class SugarMill_Small : BuildingAbstract
+    {
+        public SugarMill_Small()
+        {
+            Level = 1;
+            Scale = "Small";
+            Name = "SugarMill(Small)";
+            Industry = "Sugar";
+            Type = "Building";
+            Score = 1;
+            Cost = 2;
+            MaxWorker = 1;
+        }
+    }
+    /// <summary>
+    /// 大蔗糖廠
+    /// </summary>
+    public class SugarMill_Large : BuildingAbstract
+    {
+        public SugarMill_Large()
+        {
+            Level = 2;
+            Scale = "Large";
+            Name = "SugarMill(Large)";
+            Industry = "Sugar";
+            Type = "Building";
+            Score = 2;
+            Cost = 4;
+            MaxWorker = 3;
         }
     }
     /// <summary>

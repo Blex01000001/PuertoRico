@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bank.cs" />
+    <Compile Include="BuildingListConverter.cs" />
     <Compile Include="Building\BuildingAbstract.cs" />
     <Compile Include="CargoConverter.cs" />
     <Compile Include="data.cs" />

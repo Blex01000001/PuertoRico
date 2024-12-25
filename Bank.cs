@@ -126,23 +126,23 @@ namespace PuertoRicoSpace
             //生廠廠房
             for (int i = 0; i < 4; i++)
             {
-                IndigoPlant indigoPlant_S = new IndigoPlant(0);
-                AvailableBuildings.Add(indigoPlant_S);
+                IndigoPlant_Small indigoPlant_Small = new IndigoPlant_Small();
+                AvailableBuildings.Add(indigoPlant_Small);
             }
             for (int i = 0; i < 3; i++)
             {
-                IndigoPlant indigoPlant_B = new IndigoPlant(1);
-                AvailableBuildings.Add(indigoPlant_B);
+                IndigoPlant_Large indigoPlant_Large = new IndigoPlant_Large();
+                AvailableBuildings.Add(indigoPlant_Large);
             }
             for (int i = 0; i < 4; i++)
             {
-                SugarMill sugarMill_S = new SugarMill(0);
-                AvailableBuildings.Add(sugarMill_S);
+                SugarMill_Small sugarMill_Small = new SugarMill_Small();
+                AvailableBuildings.Add(sugarMill_Small);
             }
             for (int i = 0; i < 3; i++)
             {
-                SugarMill sugarMill_B = new SugarMill(1);
-                AvailableBuildings.Add(sugarMill_B);
+                SugarMill_Large sugarMill_Large = new SugarMill_Large();
+                AvailableBuildings.Add(sugarMill_Large);
             }
             for (int i = 0; i < 3; i++)
             {
