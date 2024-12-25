@@ -22,6 +22,10 @@ namespace PuertoRicoSpace
             Quantity = 0;
             MaxCargoQuantity = maxCargoQuantity;
         }
+        public void JsonSet(string type = null, string cargo = null, int qty = 0, int maxqty = 0)
+        {
+
+        }
         public void AddQuantity(int qty)
         {
             Quantity += qty;

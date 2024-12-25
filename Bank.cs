@@ -3,23 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
 {
     public class Bank
     {
+        [JsonInclude]
         public int Worker { get; private set; }
+        [JsonInclude]
         public int WorkerShip { get; private set; }
+        [JsonInclude]
         public int Money { get; private set; }
+        [JsonInclude]
         public int Score { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(CargoListConverter))]
         public List<CargoAbstract> Cargos { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> QuarryFields  { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> TrushFarms { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> AvailableFarms  { get; internal set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> HideFarms  { get; internal set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> AvailableBuildings { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
         public List<BuildingAbstract> Buildings { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(ShipListConverter))]
         public List<Ship> Ships { get; private set; }
         public Bank() { }
         public void SetUp(int playerNum)

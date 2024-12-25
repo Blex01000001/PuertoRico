@@ -66,32 +66,35 @@ namespace PuertoRicoSpace
             //PuertoRico game1 = JsonSerializer.Deserialize<PuertoRico>(jsonInput);
             data da = JsonSerializer.Deserialize<data>(jsonInput);
 
-            Console.WriteLine($"{da.ElapsedTime}");
-            Console.WriteLine($"{da.PlayerNum}");
-            Console.WriteLine($"{da.Round}"); 
-            Console.WriteLine($"{da.TotalScore}");
-            foreach (Player player in da.PlayerList)
-            {
-                Console.WriteLine($"player name: {player.Name}");
-                Console.Write("cargo:");
-                foreach (var cargo in player.Cargos)
-                {
-                    Console.Write($"{cargo.Name}  Qty: {cargo.Qty} ");
-                }
-                Console.Write("\n");
-                Console.Write("farm list: ");
-                foreach (var farm in player.FarmList)
-                {
-                    Console.Write($"{farm.Name}({farm.Worker}/{farm.MaxWorker}) ");
-                }
-                Console.Write("\n");
-                Console.Write("building list: ");
-                foreach (var building in player.BuildingList)
-                {
-                    Console.Write($"{building.Name}({building.Worker}/{building.MaxWorker}) ");
-                }
-                Console.Write("\n");
-            }
+            //Console.WriteLine($"{da.ElapsedTime}");
+            //Console.WriteLine($"{da.PlayerNum}");
+            //Console.WriteLine($"{da.Round}"); 
+            //Console.WriteLine($"{da.TotalScore}");
+            //foreach (Player player in da.PlayerList)
+            //{
+            //    Console.WriteLine($"player name: {player.Name} money: {player.Money} score: {player.Score} worker: {player.Worker} ");
+            //    Console.Write("cargo:");
+            //    foreach (var cargo in player.Cargos)
+            //    {
+            //        Console.Write($"{cargo.Name}  Qty: {cargo.Qty} ");
+            //    }
+            //    Console.Write("\n");
+            //    Console.Write("farm list: ");
+            //    foreach (var farm in player.FarmList)
+            //    {
+            //        Console.Write($"{farm.Name}({farm.Worker}/{farm.MaxWorker}) ");
+            //    }
+            //    Console.Write("\n");
+            //    Console.Write("building list: ");
+            //    foreach (var building in player.BuildingList)
+            //    {
+            //        Console.Write($"{building.Name}({building.Worker}/{building.MaxWorker}) ");
+            //    }
+            //    Console.Write("\n");
+            //}
+
+            da.ShowBankStatus();
+            da.ShowPlayerStatus();
 
 
 
