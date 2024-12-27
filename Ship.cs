@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PuertoRicoSpace
@@ -24,7 +25,10 @@ namespace PuertoRicoSpace
         }
         public void JsonSet(string type = null, string cargo = null, int qty = 0, int maxqty = 0)
         {
-
+            Type = type;
+            Cargo = cargo;
+            Quantity = qty;
+            MaxCargoQuantity = maxqty;
         }
         public void AddQuantity(int qty)
         {

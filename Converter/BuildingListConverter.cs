@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using System.Reflection;
 
 namespace PuertoRicoSpace
 {
@@ -41,7 +42,7 @@ namespace PuertoRicoSpace
 
             string name = null;
             string industry = null;
-            string type = null;
+            string buildingType = null;
             string scale = null;
             int worker = 0;
             int maxworker = 0;
@@ -67,7 +68,7 @@ namespace PuertoRicoSpace
                     }
                     else if (propertyName == "Type")
                     {
-                        type = reader.GetString();
+                        buildingType = reader.GetString();
                     }
                     else if (propertyName == "Scale")
                     {
@@ -106,135 +107,14 @@ namespace PuertoRicoSpace
             }
 
             BuildingAbstract building;
-            if (name == "QuarryFarm")
-            {
-                building = new QuarryFarm();
-            }
-            else if (name == "CoffeeFarm")
-            {
-                building = new CoffeeFarm();
-            }
-            else if (name == "TobaccoFarm")
-            {
-                building = new TobaccoFarm();
-            }
-            else if (name == "CornFarm")
-            {
-                building = new CornFarm();
-            }
-            else if (name == "SugarFarm")
-            {
-                building = new SugarFarm();
-            }
-            else if (name == "IndigoFarm")
-            {
-                building = new IndigoFarm();
-            }
-            else if (name == "IndigoPlant(Small)")
-            {
-                building = new IndigoPlant_Small();
-            }
-            else if (name == "IndigoPlant(Large)")
-            {
-                building = new IndigoPlant_Large();
-            }
-            else if (name == "SugarMill(Small)")
-            {
-                building = new SugarMill_Small();
-            }
-            else if (name == "SugarMill(Large)")
-            {
-                building = new SugarMill_Large();
-            }
-            else if (name == "TobaccoStorage")
-            {
-                building = new TobaccoStorage();
-            }
-            else if (name == "CoffeeRoaster")
-            {
-                building = new CoffeeRoaster();
-            }
-            else if (name == "Smallmarket")
-            {
-                building = new Smallmarket();
-            }
-            else if (name == "Largemarket")
-            {
-                building = new Largemarket();
-            }
-            else if (name == "Hacienda")
-            {
-                building = new Hacienda();
-            }
-            else if (name == "Constructionhut")
-            {
-                building = new Constructionhut();
-            }
-            else if (name == "Smallwarehouse")
-            {
-                building = new Smallwarehouse();
-            }
-            else if (name == "Largewarehouse")
-            {
-                building = new Largewarehouse();
-            }
-            else if (name == "Hospice")
-            {
-                building = new Hospice();
-            }
-            else if (name == "Office")
-            {
-                building = new Office();
-            }
-            else if (name == "Factory")
-            {
-                building = new Factory();
-            }
-            else if (name == "University")
-            {
-                building = new University();
-            }
-            else if (name == "Harbor")
-            {
-                building = new Harbor();
-            }
-            else if (name == "Wharf")
-            {
-                building = new Wharf();
-            }
-            else if (name == "Guildhall")
-            {
-                building = new Guildhall();
-            }
-            else if (name == "Residence")
-            {
-                building = new Residence();
-            }
-            else if (name == "Fortress")
-            {
-                building = new Fortress();
-            }
-            else if (name == "Customshouse")
-            {
-                building = new Customshouse();
-            }
-            else if (name == "Cityhall")
-            {
-                building = new Cityhall();
-            }
-            else if (name == "PassBuilding")
-            {
-                building = new PassBuilding();
-            }
-            else
-            {
-                throw new JsonException($"Unknown cargo type: {name}");
-            }
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Type type = assembly.GetType($"PuertoRicoSpace.{name}");
+            building = (BuildingAbstract)Activator.CreateInstance(type);
 
             building.SetJson(
                 name:name, 
                 industry: industry, 
-                type:type, 
+                type: buildingType, 
                 scale: scale, 
                 worker: worker, 
                 maxworker: maxworker, 

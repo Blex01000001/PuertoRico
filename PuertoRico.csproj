@@ -81,6 +81,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bank.cs" />
+    <Compile Include="Building\Cityhall.cs" />
+    <Compile Include="Building\CoffeeFarm.cs" />
+    <Compile Include="Building\CoffeeRoaster.cs" />
+    <Compile Include="Building\Constructionhut.cs" />
+    <Compile Include="Building\CornFarm.cs" />
+    <Compile Include="Building\Customshouse.cs" />
+    <Compile Include="Building\Factory.cs" />
+    <Compile Include="Building\Fortress.cs" />
+    <Compile Include="Building\Guildhall.cs" />
+    <Compile Include="Building\Hacienda.cs" />
+    <Compile Include="Building\Harbor.cs" />
+    <Compile Include="Building\Hospice.cs" />
+    <Compile Include="Building\IndigoFarm.cs" />
+    <Compile Include="Building\IndigoPlant_Large.cs" />
+    <Compile Include="Building\IndigoPlant_Small.cs" />
+    <Compile Include="Building\Largemarket.cs" />
+    <Compile Include="Building\Largewarehouse.cs" />
+    <Compile Include="Building\Office.cs" />
+    <Compile Include="Building\QuarryFarm.cs" />
+    <Compile Include="Building\Residence.cs" />
+    <Compile Include="Building\Smallmarket.cs" />
+    <Compile Include="Building\Smallwarehouse.cs" />
+    <Compile Include="Building\SugarFarm.cs" />
+    <Compile Include="Building\SugarMill_Large.cs" />
+    <Compile Include="Building\SugarMill_Small.cs" />
+    <Compile Include="Building\TobaccoFarm.cs" />
+    <Compile Include="Building\TobaccoStorage.cs" />
+    <Compile Include="Building\University.cs" />
+    <Compile Include="Building\Wharf.cs" />
     <Compile Include="Converter\BuildingListConverter.cs" />
     <Compile Include="Building\BuildingAbstract.cs" />
     <Compile Include="Converter\CargoConverter.cs" />

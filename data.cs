@@ -32,16 +32,6 @@ namespace PuertoRico
             Console.WriteLine($"Tobacco   \t{Bank.Cargos[3].Qty}");
             Console.WriteLine($"Indigo    \t{Bank.Cargos[4].Qty}");
         }
-        //public void ShowShopGoods()
-        //{
-        //    Console.Write("\n");
-        //    Console.Write($"ShopGoods:");
-        //    foreach (CargoAbstract good in Shop)
-        //    {
-        //        Console.Write($" {good.Name}");
-        //    }
-        //    Console.Write($"\n");
-        //}
         public void ShowPlayerStatus()
         {
             Console.WriteLine("--------player status--------");
@@ -72,6 +62,25 @@ namespace PuertoRico
                 }
                 Console.Write($"\n");
             }
+        }
+        public void ShowCargo()
+        {
+            Console.Write("\n");
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"Ship({ship.GetHexHash()})({ship.Quantity}/{ship.MaxCargoQuantity})\t");
+            }
+            Console.Write("\n");
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"{ship.Cargo}\t\t");
+            }
+            Console.Write("\n");
+            foreach (Ship ship in Bank.Ships)
+            {
+                Console.Write($"{ship.Quantity}\t\t");
+            }
+            Console.Write("\n");
         }
 
     }

@@ -76,33 +76,8 @@ namespace PuertoRicoSpace
             }
 
             Ship ship = new Ship(maxCargoQuantity, type);
-            //if (name == "Coffee")
-            //{
-            //    ship = new Coffee();
-            //}
-            //else if (name == "Tobacco")
-            //{
-            //    ship = new Tobacco();
-            //}
-            //else if (name == "Corn")
-            //{
-            //    ship = new Corn();
-            //}
-            //else if (name == "Sugar")
-            //{
-            //    ship = new Sugar();
-            //}
-            //else if (name == "Indigo")
-            //{
-            //    ship = new Indigo();
-            //}
-            //else
-            //{
-            //    throw new JsonException($"Unknown ship type: {name}");
-            //}
 
             ship.JsonSet(type: type, cargo: cargo, qty: qantity, maxqty: maxCargoQuantity);
-            //cargo.Qty = qty;
             return ship;
         }
 

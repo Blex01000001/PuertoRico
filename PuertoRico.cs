@@ -16,7 +16,6 @@ namespace PuertoRicoSpace
         public List<Player> PlayerList { get; private set; }
         public List<Player> PlayerListByGovernor { get; private set; }
         public List<RoleAbstract> AvailableRoles { get; private set; }//角色List
-        public List<RoleAbstract> SelectedRoles { get; private set; }
         public List<CargoAbstract> Shop { get; private set; }//商店四格商品的空間
         public TimeSpan ElapsedTime { get; private set; }//遊戲經過時間
         public int Round { get; private set; }
@@ -27,7 +26,6 @@ namespace PuertoRicoSpace
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-           
             this.PlayerNum = playerNum;
             Bank = new Bank();
             Shop = new List<CargoAbstract>();
@@ -39,34 +37,21 @@ namespace PuertoRicoSpace
             while (!EndGame)
             {
                 Console.WriteLine($"==========ROUND {Round + 1}==========");
-                //選角色時
-                //初期：較不會選船長、交易員；多選開拓者、建築師、市長
-                //中期：
-                //後期：較不會選開拓者、礦工，多選工匠
                 AdjustmentPriority();
                 List<RoleAbstract> priorityRoles = Utilities.RandomOrderByPriority(AvailableRoles);
-                //for (int ii = 0; ii < 20; ii++)
-                //{
-                //    priorityRoles = Utilities.RandomOrderByPriority(AvailableRoles);
-                //    foreach (RoleAbstract role in priorityRoles)
-                //    {
-                //        Console.Write($"{role.Name} ");
-                //    }
-                //    Console.Write($"\n");
-                //}
                 foreach (Player player in PlayerListByGovernor)
                 {
-                    Console.WriteLine($"{player.Name} select {priorityRoles[0].Name}");
-                    player.SetRole(priorityRoles[0].Name);
-                    if (priorityRoles[0].Money > 0)//玩家所選的角色牌上如果有錢就加到玩家裡
+                    RoleAbstract selectedRole = priorityRoles[0];
+                    Console.WriteLine($"{player.Name} select {selectedRole.Name}");
+                    player.SetRole(selectedRole.Name);
+                    if (selectedRole.Money > 0)//玩家所選的角色牌上如果有錢就加到玩家裡
                     {
-                        player.IncreaseMoney(priorityRoles[0].Money);
-                        Console.WriteLine($"\t{player.Name} get {priorityRoles[0].Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
-                        priorityRoles[0].ResetMoney();//角色牌所累積的錢歸零
+                        player.IncreaseMoney(selectedRole.Money);
+                        Console.WriteLine($"\t{player.Name} get {selectedRole.Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
+                        selectedRole.ResetMoney();//角色牌所累積的錢歸零
                     }
-                    priorityRoles[0].Action(player, this);
-                    //SelectedRoles.Add(priorityRoles[0]);
-                    priorityRoles.Remove(priorityRoles[0]);
+                    selectedRole.Action(player, this);
+                    priorityRoles.Remove(selectedRole);
                 }
 
                 Console.WriteLine($"==========ROUND {Round + 1} END==========");
@@ -77,14 +62,10 @@ namespace PuertoRicoSpace
                     roles.AddMoney(Bank.GetMoney(1));
                 }
 
-                //AvailableRoles.AddRange(SelectedRoles);//將被選過的角色加回去AvailableRoles
-                //SelectedRoles.RemoveAll(x => true);
-
                 ShowAvailableRolesStatus();
                 //ShowAvailableFarms();
                 //ShowHideFarms();
                 ShowBankStatus();
-                
                 ShowShopGoods();
                 ShowCargo();
                 ShowPlayerStatus();
@@ -92,7 +73,6 @@ namespace PuertoRicoSpace
                 NextGovernor();//換下一個人當總督
                 ClearPlayerRoles();//清空每個人所選的角色
                 Console.WriteLine("\n");
-
                 Round++;
             }
             CalculateScore();
@@ -177,7 +157,6 @@ namespace PuertoRicoSpace
         private void CreateRoles(int playerNum)
         {
             AvailableRoles = new List<RoleAbstract>();
-            SelectedRoles = new List<RoleAbstract>();
 
             RoleAbstract Settler = new Settler();//開拓者
             AvailableRoles.Add(Settler);
@@ -422,8 +401,12 @@ namespace PuertoRicoSpace
             }
         }
         private void AdjustmentPriority()
-        {
-            if(Round < 3)
+        {                
+            //選角色時
+            //初期：較不會選船長、交易員；多選開拓者、建築師、市長
+            //中期：
+            //後期：較不會選開拓者、礦工，多選工匠
+            if (Round < 3)
             {
                 AvailableRoles.Find(x => x.Name == "Settler   ").SetPriority(100);
                 AvailableRoles.Find(x => x.Name == "Builder   ").SetPriority(100);

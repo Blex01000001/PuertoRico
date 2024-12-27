@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using PuertoRico;
 using System.Numerics;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace PuertoRicoSpace
 {
@@ -22,7 +23,7 @@ namespace PuertoRicoSpace
             List<PuertoRico> puertoRico = new List<PuertoRico>();
             Guid guid = Guid.NewGuid();
             string path = "C:\\Users\\AUser\\Downloads\\" + guid + ".json";
-            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3;
+            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5;
             do
             {
                 PuertoRico game = new PuertoRico(5);
@@ -66,6 +67,15 @@ namespace PuertoRicoSpace
             //PuertoRico game1 = JsonSerializer.Deserialize<PuertoRico>(jsonInput);
             data da = JsonSerializer.Deserialize<data>(jsonInput);
 
+            string typeName = "QuarryFarm";
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Type type = assembly.GetType($"PuertoRicoSpace.{typeName}");
+            BuildingAbstract build = (BuildingAbstract)Activator.CreateInstance(type);
+
+            Console.WriteLine($"**********");
+            Console.WriteLine($"**********{build.Name}");
+            Console.WriteLine($"**********");
+            //D:\Code\C#\PuertoRico\Building\
             //Console.WriteLine($"{da.ElapsedTime}");
             //Console.WriteLine($"{da.PlayerNum}");
             //Console.WriteLine($"{da.Round}"); 
@@ -95,25 +105,7 @@ namespace PuertoRicoSpace
 
             da.ShowBankStatus();
             da.ShowPlayerStatus();
-
-
-
-            Console.WriteLine($"PlayerList[0].name: {da.PlayerList[0].Name}");
-            Console.WriteLine($"PlayerList[0].money: {da.PlayerList[0].Money}");
-            Console.WriteLine($"PlayerList[0].Worker: {da.PlayerList[0].Worker}");
-            Console.WriteLine($"PlayerList[0].Score: {da.PlayerList[0].Score}");
-
-
-            Console.WriteLine($"player list count: {da.PlayerList.Count}");
-            foreach (Player player in da.PlayerList)
-            {
-                Console.WriteLine($"player name: {player.Name}");
-                Console.WriteLine($"player worker: {player.Worker}");
-
-            }
-
-
-
+            da.ShowCargo();
 
             //puertoRico.Add(game1);
 
