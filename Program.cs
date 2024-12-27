@@ -23,7 +23,7 @@ namespace PuertoRicoSpace
             List<PuertoRico> puertoRico = new List<PuertoRico>();
             Guid guid = Guid.NewGuid();
             string path = "C:\\Users\\AUser\\Downloads\\" + guid + ".json";
-            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5;
+            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1;
             do
             {
                 PuertoRico game = new PuertoRico(5);
@@ -38,14 +38,9 @@ namespace PuertoRicoSpace
                 _data.TotalScore = game.TotalScore;
                 _data.PlayerList = game.PlayerList;
                 _data.Bank = game.Bank;
-
-                Console.WriteLine($"**player name: {_data.PlayerList[0].Name}");
-                Console.WriteLine($"**player worker: {_data.PlayerList[0].Worker}");
-                Console.WriteLine($"**player list count: {_data.PlayerList.Count}");
-                string input = JsonSerializer.Serialize(_data);
-
                 //var jsonString = JsonConvert.SerializeObject(game);
                 //Console.WriteLine(jsonString);
+                string input = JsonSerializer.Serialize(_data);
                 StreamWriter streamWriter = new StreamWriter(path);
                 streamWriter.Write(input);
                 streamWriter.Flush();

@@ -28,6 +28,27 @@ namespace PuertoRicoSpace
                 }
                 if (p1.Role == "Craftsman " && harvestCargo.Count != 0)
                     CraftsmanPrivilege(p1, harvestCargo, game);
+                if (Utilities.CheckBuildingWithWorker(p1, typeof(Factory)))//檢查玩家是否有大工廠
+                {
+                    int getMoney = 0;
+                    switch (harvestCargo.Count)
+                    {
+                        case 2:
+                            getMoney = game.Bank.GetMoney(1);
+                            break;
+                        case 3:
+                            getMoney = game.Bank.GetMoney(2);
+                            break;
+                        case 4:
+                            getMoney = game.Bank.GetMoney(3);
+                            break;
+                        case 5:
+                            getMoney = game.Bank.GetMoney(5);
+                            break;
+                    }
+                    p1.IncreaseMoney(getMoney);
+                    Console.WriteLine($"{p1.Name} get {getMoney} from bank (Factory)");
+                }
             }
         }
         private int CheckedHarvest(Player player, CargoAbstract good)//小於0代表無法收成

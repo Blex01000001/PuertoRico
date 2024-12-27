@@ -19,13 +19,22 @@ namespace PuertoRicoSpace
             foreach (Player p1 in game.GetPlayerListFromRole(player)) //從開拓者開始選農田，接著下家，依此類推
             {
                 BuildingAbstract selectedBuilding = null;
-                bool ConstructionhutRules = Utilities.CheckBuildingWithWorker(p1, typeof(Constructionhut));
-                if (game.Bank.AvailableFarms.Count <= 0)
+                bool ConstructionhutRules = Utilities.CheckBuildingWithWorker(p1, typeof(Constructionhut));//檢查玩家是否有建築舍
+                bool HaciendaRules = Utilities.CheckBuildingWithWorker(p1, typeof(Constructionhut));//檢查玩家是否有農莊
+                //農莊作用時，當開拓者出現時，玩家可以（也可以不要）從背面朝上的農田方塊中抽取一張，放在自己的郊區空格上。然後才從正面朝上的農天方塊中選擇方塊（當自己是開拓者的時候，可以選擇採礦場）。
+                //當背面朝上的農田方塊已經沒了，就不可以抽取。
+                //不管農田方塊是不是玩家要的都必須接受
+                if (p1.FarmList.Count < 12 && game.Bank.HideFarms.Count > 0)
                 {
+                    GetHideField(p1, game);
+                }
+
+                if (game.Bank.AvailableFarms.Count <= 0)//正面朝上的農天方塊為0
+                    {
                     Console.WriteLine("***No available Farms***");
                     continue;
                 }
-                else if (p1.FarmList.Count >= 12)
+                else if (p1.FarmList.Count >= 12)//玩家農田已滿
                 {
                     Console.WriteLine($"***{p1.Name} field is full***");
                     continue;
@@ -58,7 +67,6 @@ namespace PuertoRicoSpace
                     selectedBuilding.IncreaseWorker(worker);
                     p1.IncreaseWorker(worker);
                     Console.WriteLine($"\t\t{p1.Name} get {worker} worker from workership and put it on the {selectedBuilding.Name}({selectedBuilding.GetHexHash()}) (Hospice)");
-
                 }
                 game.ArrangeFarms();
             }
@@ -80,6 +88,13 @@ namespace PuertoRicoSpace
             Console.WriteLine($"\t{p1.Name} select the {farm.Name}({farm.GetHexHash()})");
             return farm;
         }
-
+        private BuildingAbstract GetHideField(Player p1, PuertoRico game)
+        {
+            BuildingAbstract farm = game.Bank.HideFarms[0];
+            p1.FarmList.Add(farm);
+            game.Bank.HideFarms.Remove(farm);
+            Console.WriteLine($"\t{p1.Name} get the {farm.Name}({farm.GetHexHash()})(Hacienda)");
+            return farm;
+        }
     }
 }
