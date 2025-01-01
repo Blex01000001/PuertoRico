@@ -1,6 +1,7 @@
 ﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -15,9 +16,14 @@ namespace PuertoRicoSpace
         public abstract string Name { get; }
         [JsonInclude]
         public int Qty { get; private set; } // 通用的屬性，由基類直接管理
+        public StreamWriter _writer;
         protected CargoAbstract()
         {
             Qty = 0; // 初始化商品數量
+        }
+        public void SetWriter(StreamWriter writer)
+        {
+            this._writer = writer;
         }
         public void Add(int qty)
         {
@@ -27,14 +33,14 @@ namespace PuertoRicoSpace
         {
             if (Qty <= 0)
             {
-                Console.WriteLine($" there are no {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                _writer.WriteLine($" there are no {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
                 return 0;
             }
             else if (Qty < qty)
             {
                 int temp = Qty;
                 Qty = 0;
-                Console.WriteLine($" only {temp} {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                _writer.WriteLine($" only {temp} {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
                 return temp;
             }
             Qty -= qty;
@@ -44,14 +50,14 @@ namespace PuertoRicoSpace
         {
             if (Qty <= 0)
             {
-                Console.WriteLine($" there are no {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                _writer.WriteLine($" there are no {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
                 return 0;
             }
             else if (Qty < qty)
             {
                 int temp = Qty;
                 Qty = 0;
-                Console.WriteLine($" only {temp} {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
+                _writer.WriteLine($" only {temp} {GetType().Name} in the bank, Bank {GetType().Name}: {Qty}");
                 return temp;
             }
             return qty;

@@ -12,13 +12,13 @@ namespace PuertoRicoSpace
 
         public override void Action(Player player, PuertoRico game)
         {//玩家可以不要買貨品嗎? 可以
-            Console.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{Name} Action");
             foreach (Player player1 in game.GetPlayerListFromRole(player))
             {
                 //商店只有四格商品的空間。在任何一圈當中，只要商店的空間滿了，任何人在該圈將無法販賣商品
                 if (game.Shop.Count >= 4)//商店滿了不能賣
                 {
-                    Console.WriteLine("***商店已滿，無法販售***");
+                    game._writer.WriteLine("***商店已滿，無法販售***");
                     continue;
                 }
                 List<CargoAbstract> tempGoodList = player1.Cargos.OrderBy(x => Utilities.RndNum()).ToList();
@@ -32,7 +32,7 @@ namespace PuertoRicoSpace
                         continue;
                     if (!ignoreSalesRules && containGoodIndex >= 0)//沒有辦公室且重複的商品不能賣
                     {
-                        //Console.WriteLine($"***沒有辦公室且重複的商品***");
+                        //game._writer.WriteLine($"***沒有辦公室且重複的商品***");
                         continue;
                     }
                     int buildingDiscount = 0;
@@ -65,15 +65,16 @@ namespace PuertoRicoSpace
                     }
                     //SalesGoods
                     int getMoneyFromBank = game.Bank.GetMoney(totalPrice);
-                    player1.IncreaseMoney(getMoneyFromBank);
+                    player1.AddMoney(getMoneyFromBank);
                     player1.DecreaseCargo(good.Name, 1);
                     game.Shop.Add(good);
-                    Console.Write($"\t\t{player1.Name} Sales {good.Name} to shop, get {getMoneyFromBank} dollar from bank, ");
+                    game._writer.Write($"\t\t{player1.Name} Sales {good.Name} to shop, get {getMoneyFromBank} dollar from bank, ");
                     game.ShowShopGoods();
                     break;
                 }
             }
             game.CheckShop();
+            game._writer.Flush();
         }
     }
 }

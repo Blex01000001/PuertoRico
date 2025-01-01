@@ -12,7 +12,7 @@ namespace PuertoRicoSpace
         public override string Name => "Craftsman ";
         public override void Action(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{Name} Action");
             foreach (Player p1 in game.GetPlayerListFromRole(player))
             {
                 List<CargoAbstract> harvestCargo = new List<CargoAbstract>();
@@ -22,9 +22,9 @@ namespace PuertoRicoSpace
                     if (checkedHarvest <= 0)//小於0代表無法收成
                         continue;
                     int getGoodQTY = game.Bank.GetCargo(good.GetType(), checkedHarvest);
-                    p1.IncreaseCargo(good.Name, getGoodQTY);
+                    p1.AddCargo(good.Name, getGoodQTY);
                     harvestCargo.Add(good);
-                    Console.WriteLine($"\t\t{p1.Name} get {getGoodQTY} {good.Name} from bank");
+                    game._writer.WriteLine($"\t\t{p1.Name} get {getGoodQTY} {good.Name} from bank");
                 }
                 if (p1.Role == "Craftsman " && harvestCargo.Count != 0)
                     CraftsmanPrivilege(p1, harvestCargo, game);
@@ -46,10 +46,11 @@ namespace PuertoRicoSpace
                             getMoney = game.Bank.GetMoney(5);
                             break;
                     }
-                    p1.IncreaseMoney(getMoney);
-                    Console.WriteLine($"{p1.Name} get {getMoney} from bank (Factory)");
+                    p1.AddMoney(getMoney);
+                    game._writer.WriteLine($"{p1.Name} get {getMoney} from bank (Factory)");
                 }
             }
+            game._writer.Flush();
         }
         private int CheckedHarvest(Player player, CargoAbstract good)//小於0代表無法收成
         {
@@ -73,8 +74,8 @@ namespace PuertoRicoSpace
             {
                 if (game.Bank.TryGetCargo(cargo.GetType(), 1) > 0)
                 {
-                    p2.IncreaseCargo(cargo.Name, 1);
-                    Console.WriteLine($"\t\t{p2.Name} get 1 {cargo.Name} from bank(Craftsman Privilege)");
+                    p2.AddCargo(cargo.Name, 1);
+                    game._writer.WriteLine($"\t\t{p2.Name} get 1 {cargo.Name} from bank(Craftsman Privilege)");
                     break;
                 }
             }

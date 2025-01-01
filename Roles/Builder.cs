@@ -14,7 +14,7 @@ namespace PuertoRicoSpace
         public Builder() { }
         public override void Action(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{Name} Action");
             AdjustmentPriority(game);
             List<BuildingAbstract> priorityBuildings = Utilities.RandomOrderByPriority(game.Bank.AvailableBuildings);
 
@@ -26,7 +26,7 @@ namespace PuertoRicoSpace
                     BuildingAbstract tempBuilding = priorityBuildings[j];
                     if (tempBuilding.Name == "PassBuilding")//選到PassBuilding代表該玩家pass掉買建築物
                     {
-                        Console.WriteLine($"\t\t{p1.Name} PASS buy the building");
+                        game._writer.WriteLine($"\t\t{p1.Name} PASS buy the building");
                         break;
                     }
                     int containBuildingIndex = p1.GetAllBuildings().FindIndex(x => x.Name == tempBuilding.Name);
@@ -36,7 +36,7 @@ namespace PuertoRicoSpace
                     if (buildingCost < 0) //買不起就換下一個建築
                         continue;
                     //買得起就直接買
-                    Console.WriteLine($"\t\t{p1.Name} cost {buildingCost} buy the {tempBuilding.Name}");
+                    game._writer.WriteLine($"\t\t{p1.Name} cost {buildingCost} buy the {tempBuilding.Name}");
                     p1.BuildingList.Add(tempBuilding);
                     priorityBuildings.Remove(tempBuilding);
                     game.Bank.AvailableBuildings.Remove(tempBuilding);
@@ -45,8 +45,13 @@ namespace PuertoRicoSpace
                     game.Bank.AddMoney(buildingCost);
                     break;
                 }
-                //game.Bank.RndAvailableBuildings();
+                if(p1.BuildingList.Count >= 12)//在建築師出現時，至少有一個人將12個建築空格蓋滿則發生遊戲結束事件
+                {
+                    game._writer.WriteLine($"\n>>>>{p1.Name}建築空格已滿，遊戲將在輪轉後結束<<<<\n");
+                    game.CallGame();
+                }
             }
+            game._writer.Flush();
         }
         private int CheckDiscount(Player player, BuildingAbstract building)
         {

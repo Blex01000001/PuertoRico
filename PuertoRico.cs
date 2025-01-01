@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,13 +22,17 @@ namespace PuertoRicoSpace
         public int Round { get; private set; }
         public int TotalScore { get; private set; }
         private bool EndGame = false;
+        public StreamWriter _writer;
+        private string _filePath;
 
-        public PuertoRico(int playerNum)
+        public PuertoRico(int playerNum, Guid guid)
         {
+            _filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".txt";
+            _writer = new StreamWriter(_filePath);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             this.PlayerNum = playerNum;
-            Bank = new Bank();
+            Bank = new Bank(_writer);
             Shop = new List<CargoAbstract>();
             Bank.SetUp(PlayerNum);
             CreatePlayers(PlayerNum);
@@ -36,29 +41,29 @@ namespace PuertoRicoSpace
             
             while (!EndGame)
             {
-                Console.WriteLine($"==========ROUND {Round + 1}==========");
+                _writer.WriteLine($"==========ROUND {Round + 1}==========");
                 AdjustmentPriority();
                 List<RoleAbstract> priorityRoles = Utilities.RandomOrderByPriority(AvailableRoles);
                 foreach (Player player in PlayerListByGovernor)
                 {
                     RoleAbstract selectedRole = priorityRoles[0];
-                    Console.WriteLine($"{player.Name} select {selectedRole.Name}");
+                    _writer.WriteLine($"{player.Name} select {selectedRole.Name}");
                     player.SetRole(selectedRole.Name);
                     if (selectedRole.Money > 0)//玩家所選的角色牌上如果有錢就加到玩家裡
                     {
-                        player.IncreaseMoney(selectedRole.Money);
-                        Console.WriteLine($"\t{player.Name} get {selectedRole.Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
+                        player.AddMoney(selectedRole.Money);
+                        _writer.WriteLine($"\t{player.Name} get {selectedRole.Money} money from Role, {player.Name} Sum Money: {player.Money}, Bank: {Bank.Money}");
                         selectedRole.ResetMoney();//角色牌所累積的錢歸零
                     }
                     selectedRole.Action(player, this);
                     priorityRoles.Remove(selectedRole);
                 }
 
-                Console.WriteLine($"==========ROUND {Round + 1} END==========");
+                _writer.WriteLine($"==========ROUND {Round + 1} END==========");
 
                 foreach (RoleAbstract roles in priorityRoles)//沒有被選到的角色的錢+1
                 {
-                    //Console.WriteLine($"remaining roles: {roles.Name} Money +1");
+                    //_writer.WriteLine($"remaining roles: {roles.Name} Money +1");
                     roles.AddMoney(Bank.GetMoney(1));
                 }
 
@@ -72,7 +77,7 @@ namespace PuertoRicoSpace
 
                 NextGovernor();//換下一個人當總督
                 ClearPlayerRoles();//清空每個人所選的角色
-                Console.WriteLine("\n");
+                _writer.WriteLine("\n");
                 Round++;
             }
             CalculateScore();
@@ -80,6 +85,9 @@ namespace PuertoRicoSpace
             timer.Stop();
             // Get the elapsed time as a TimeSpan value.
             ElapsedTime = timer.Elapsed;
+            _writer.Flush();
+            _writer.Close();
+            ShowConsole();
         }
         /// <summary>
         /// 將EndGame設為TRUE，代表遊戲達到結束條件
@@ -93,7 +101,7 @@ namespace PuertoRicoSpace
             //遊戲一開始每個人分得N-1元貨幣，N為遊戲人數。這些錢就放在各自島嶼板上的空位讓大家看到
             foreach (Player player in PlayerList)
             {
-                player.IncreaseMoney(Bank.GetMoney(playerNum - 1));
+                player.AddMoney(Bank.GetMoney(playerNum - 1));
             }
             //根據參加人數不同，每個人得到的第一個農田方塊不同：
             //3個人遊玩：第1、2家為染料田，第3家為玉米田。
@@ -149,7 +157,7 @@ namespace PuertoRicoSpace
             PlayerListByGovernor = new List<Player>();
             for (int i = 0; i < playerNum; i++)
             {
-                Player player = new Player(Convert.ToChar(65 + i).ToString());
+                Player player = new Player(Convert.ToChar(65 + i).ToString(), _writer);
                 PlayerList.Add(player);
                 PlayerListByGovernor.Add(player);
             }
@@ -204,56 +212,56 @@ namespace PuertoRicoSpace
         }
         private void ShowAvailableRolesStatus()
         {
-            Console.WriteLine("--------availableRoles status--------");
-            Console.WriteLine($"Role\t\tMoney");
+            _writer.WriteLine("--------availableRoles status--------");
+            _writer.WriteLine($"Role\t\tMoney");
             foreach (RoleAbstract roles in AvailableRoles.Where(x => x.Money > 0))
             {
-                Console.WriteLine($"{roles.Name} \t  {roles.Money}");
+                _writer.WriteLine($"{roles.Name} \t  {roles.Money}");
             }
         }
         private void ShowBankStatus()
         {
-            Console.WriteLine("--------Bank status--------");
-            Console.WriteLine($"Item      \tQTY");
-            Console.WriteLine($"WorkerShip\t{Bank.WorkerShip}");
-            Console.WriteLine($"Score     \t{Bank.Score}");
-            Console.WriteLine($"Worker    \t{Bank.Worker}");
-            Console.WriteLine($"Money     \t{Bank.Money}");
-            Console.WriteLine($"Corn      \t{Bank.Cargos[0].Qty}");
-            Console.WriteLine($"Sugar     \t{Bank.Cargos[1].Qty}");
-            Console.WriteLine($"Coffee    \t{Bank.Cargos[2].Qty}");
-            Console.WriteLine($"Tobacco   \t{Bank.Cargos[3].Qty}");
-            Console.WriteLine($"Indigo    \t{Bank.Cargos[4].Qty}");
+            _writer.WriteLine("--------Bank status--------");
+            _writer.WriteLine($"Item      \tQTY");
+            _writer.WriteLine($"WorkerShip\t{Bank.WorkerShip}");
+            _writer.WriteLine($"Score     \t{Bank.Score}");
+            _writer.WriteLine($"Worker    \t{Bank.Worker}");
+            _writer.WriteLine($"Money     \t{Bank.Money}");
+            _writer.WriteLine($"Corn      \t{Bank.Cargos[0].Qty}");
+            _writer.WriteLine($"Sugar     \t{Bank.Cargos[1].Qty}");
+            _writer.WriteLine($"Coffee    \t{Bank.Cargos[2].Qty}");
+            _writer.WriteLine($"Tobacco   \t{Bank.Cargos[3].Qty}");
+            _writer.WriteLine($"Indigo    \t{Bank.Cargos[4].Qty}");
         }
         public void ShowPlayerStatus()
         {
-            Console.WriteLine("--------player status--------");
-            Console.WriteLine($"Name\tScore\tMoney\tWorker\tCorn\tSugar\tCoffee\tTobacco\tIndigo\t");
+            _writer.WriteLine("--------player status--------");
+            _writer.WriteLine($"Name\tScore\tMoney\tWorker\tCorn\tSugar\tCoffee\tTobacco\tIndigo\t");
             foreach (Player player in PlayerList)
             {
-                Console.Write($"{player.Name}    \t{player.Score}   \t{player.Money}   \t{player.Worker}    \t{player.Cargos[0].Qty}   \t{player.Cargos[1].Qty}    \t{player.Cargos[2].Qty}     \t{player.Cargos[3].Qty}      \t{player.Cargos[4].Qty}\n");
+                _writer.Write($"{player.Name}    \t{player.Score}   \t{player.Money}   \t{player.Worker}    \t{player.Cargos[0].Qty}   \t{player.Cargos[1].Qty}    \t{player.Cargos[2].Qty}     \t{player.Cargos[3].Qty}      \t{player.Cargos[4].Qty}\n");
             }
-            Console.Write("\n");
-            Console.Write($"Field:\n");
+            _writer.Write("\n");
+            _writer.Write($"Field:\n");
             foreach (Player player in PlayerList)
             {
-                Console.Write($"{player.Name} ");
+                _writer.Write($"{player.Name} ");
                 foreach (BuildingAbstract field in player.FarmList)
                 {
-                    Console.Write($"{field.Name}({field.GetHexHash()})({field.Worker}/{field.MaxWorker})\t, ");
+                    _writer.Write($"{field.Name}({field.GetHexHash()})({field.Worker}/{field.MaxWorker})\t, ");
                 }
-                Console.Write($"\n");
+                _writer.Write($"\n");
             }
 
-            Console.Write($"\nBuilding:\n");
+            _writer.Write($"\nBuilding:\n");
             foreach (Player player in PlayerList)
             {
-                Console.Write($"{player.Name} ");
+                _writer.Write($"{player.Name} ");
                 foreach (BuildingAbstract building in player.BuildingList)
                 {
-                    Console.Write($"{building.Name} ({building.GetHexHash()}) ({building.Worker}/{building.MaxWorker}), ");
+                    _writer.Write($"{building.Name} ({building.GetHexHash()}) ({building.Worker}/{building.MaxWorker}), ");
                 }
-                Console.Write($"\n");
+                _writer.Write($"\n");
             }
         }
 
@@ -301,39 +309,39 @@ namespace PuertoRicoSpace
                 if (ship.Quantity >= ship.MaxCargoQuantity)
                 {
                     ship.Reset();
-                    Console.WriteLine($"***Ship({ship.GetHexHash()}) has been clear***");
+                    _writer.WriteLine($"***Ship({ship.GetHexHash()}) has been clear***");
                 }
             }
-            Console.WriteLine("");
+            _writer.WriteLine("");
         }
         public void ShowCargo()
         {
-            Console.Write("\n");
+            _writer.Write("\n");
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"Ship({ship.GetHexHash()})({ship.Quantity}/{ship.MaxCargoQuantity})\t");
+                _writer.Write($"Ship({ship.GetHexHash()})({ship.Quantity}/{ship.MaxCargoQuantity})\t");
             }
-            Console.Write("\n");
+            _writer.Write("\n");
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"{ship.Cargo}\t\t");
+                _writer.Write($"{ship.Cargo}\t\t");
             }
-            Console.Write("\n");
+            _writer.Write("\n");
             foreach (Ship ship in Bank.Ships)
             {
-                Console.Write($"{ship.Quantity}\t\t");
+                _writer.Write($"{ship.Quantity}\t\t");
             }
-            Console.Write("\n");
+            _writer.Write("\n");
         }
         public void ShowShopGoods()
         {
-            Console.Write("\n");
-            Console.Write($"ShopGoods:");
+            _writer.Write("\n");
+            _writer.Write($"ShopGoods:");
             foreach (CargoAbstract good in Shop)
             {
-                Console.Write($" {good.Name}");
+                _writer.Write($" {good.Name}");
             }
-            Console.Write($"\n");
+            _writer.Write($"\n");
         }
         public void CheckShop()
         {
@@ -352,7 +360,7 @@ namespace PuertoRicoSpace
             {
                 CheckBuildingScore(player);
                 int buildingScore = player.GetAllBuildings().Where(x => x.Type == "Building").Sum(x => x.Score);
-                player.IncreaseScore(buildingScore);
+                player.AddScore(buildingScore);
                 TotalScore += player.Score;
             }
         }
@@ -361,9 +369,9 @@ namespace PuertoRicoSpace
             if (Utilities.CheckBuildingWithWorker(player, typeof(Guildhall)))//商會，若商會作用，最後計算點數時，大型生產廠房多計兩分，小型生產廠房多計一分。
             {
                 int smallCount = player.GetAllBuildings().Where(x => x.Scale == "Small").ToList().Count;
-                player.IncreaseScore(smallCount);
+                player.AddScore(smallCount);
                 int largeCount = player.GetAllBuildings().Where(x => x.Scale == "Large").ToList().Count;
-                player.IncreaseScore(largeCount * 2);
+                player.AddScore(largeCount * 2);
             }
             if (Utilities.CheckBuildingWithWorker(player, typeof(Residence)))//府邸，若居民區作用，最後計算點數時，若郊區空格占滿九格以下，多計四分；占滿十格，多計五分；十一格六分；十二格都占滿多計七分。
             {
@@ -371,33 +379,33 @@ namespace PuertoRicoSpace
                 switch (FarmCount)
                 {
                     case int n when (n  <= 9):
-                        player.IncreaseScore(4);
+                        player.AddScore(4);
                         break;
                     case 10:
-                        player.IncreaseScore(5);
+                        player.AddScore(5);
                         break;
                     case 11:
-                        player.IncreaseScore(6);
+                        player.AddScore(6);
                         break;
                     case 12:
-                        player.IncreaseScore(7);
+                        player.AddScore(7);
                         break;
                 }
             }
             if (Utilities.CheckBuildingWithWorker(player, typeof(Fortress)))//堡壘，若要塞作用，最後計算點數時，統計遊戲盤上所有移民總數，無條件舍去每三移民多計一分。
             {
                 int score = (int)(player.Worker / 3);
-                player.IncreaseScore(score);
+                player.AddScore(score);
             }
             if (Utilities.CheckBuildingWithWorker(player, typeof(Customshouse)))//海關，若海關作用，最後計算點數時，統計（運物資上船得到的）得分方塊總分，無條件舍去每四分多計一分。
             {
                 int score = (int)(player.Score / 4);
-                player.IncreaseScore(score);
+                player.AddScore(score);
             }
             if (Utilities.CheckBuildingWithWorker(player, typeof(Cityhall)))//市政廳，若市政廳作用，最後計算點數時，每座紫色的特殊功能建築（不論大小）多計一分。
             {
                 int buildingScore = player.GetAllBuildings().Where(x => x.Type == "Building").ToList().Count;
-                player.IncreaseScore(buildingScore);
+                player.AddScore(buildingScore);
             }
         }
         private void AdjustmentPriority()
@@ -434,6 +442,13 @@ namespace PuertoRicoSpace
                 AvailableRoles.Find(x => x.Name == "Trader    ").SetPriority(50);
                 AvailableRoles.Find(x => x.Name == "Captain   ").SetPriority(50);
             }
+
+        }
+        private void ShowConsole()
+        {
+            string sec = ElapsedTime.TotalSeconds.ToString("0.000");
+            //Console.WriteLine("{0,8}{1,7}", "Time", "Score");
+            Console.WriteLine("{0,8}{1,7}{2,7}", sec, TotalScore, Round);
 
         }
     }

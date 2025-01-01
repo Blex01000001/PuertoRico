@@ -12,8 +12,9 @@ namespace PuertoRicoSpace
 
         public override void Action(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t{Name} Action");
-            player.IncreaseMoney(game.Bank.GetMoney(1));
+            game._writer.WriteLine($"\t{Name} Action");
+            player.AddMoney(game.Bank.GetMoney(1));
+            game._writer.Flush();
         }
     }
 }

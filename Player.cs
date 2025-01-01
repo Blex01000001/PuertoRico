@@ -1,6 +1,7 @@
 ﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -28,9 +29,12 @@ namespace PuertoRicoSpace
         public List<BuildingAbstract> BuildingList { get; private set; }
         [JsonInclude]
         public bool UsedStealthShip { get; private set; }
+        private StreamWriter _writer;
+
         //[JsonConstructor]
-        public Player(string name)
+        public Player(string name, StreamWriter writer)
         {
+            _writer = writer;
             Cargos = new List<CargoAbstract>();
             FarmList = new List<BuildingAbstract>();
             BuildingList = new List<BuildingAbstract>();
@@ -59,11 +63,11 @@ namespace PuertoRicoSpace
             Role = null;
         }
 
-        public void IncreaseScore(int qty)
+        public void AddScore(int qty)
         {
             Score += qty;
         }
-        public void IncreaseMoney(int qty)
+        public void AddMoney(int qty)
         {
             Money += qty;
         }
@@ -91,14 +95,14 @@ namespace PuertoRicoSpace
             allBuildings.AddRange(FarmList);
             return allBuildings;
         }
-        public void IncreaseWorker(int qty)
+        public void AddWorker(int qty)
         {
             Worker += qty;
         }
         public List<BuildingAbstract> GetEmptyCircleList()
         {
             List<BuildingAbstract> PlayerBuildings = new List<BuildingAbstract>();
-            //Console.WriteLine($"FarmList.count: {FarmList.Count}");
+            //_writer.WriteLine($"FarmList.count: {FarmList.Count}");
             foreach (BuildingAbstract farm in FarmList)
             {
                 for (int i = 0; i < farm.MaxWorker; i++)
@@ -114,7 +118,7 @@ namespace PuertoRicoSpace
                     PlayerBuildings.Add(Building);
                 }
             }
-            //Console.WriteLine($"PlayerBuildings.count: {PlayerBuildings.Count}");
+            //_writer.WriteLine($"PlayerBuildings.count: {PlayerBuildings.Count}");
 
             PlayerBuildings = PlayerBuildings.OrderBy(x => Utilities.RndNum()).ToList();
             return PlayerBuildings;
@@ -133,7 +137,7 @@ namespace PuertoRicoSpace
                 Building.ResetWorker();
             }
         }
-        public void IncreaseCargo(string CargoName, int qty)
+        public void AddCargo(string CargoName, int qty)
         {
             Cargos.Find(x => x.Name == CargoName).Add(qty);
         }
@@ -152,12 +156,12 @@ namespace PuertoRicoSpace
         }
         public void ShowCargo()
         {
-            Console.Write($"\t\t{Name} cargos: ");
+            _writer.Write($"\t\t{Name} cargos: ");
             foreach (CargoAbstract cargo in Cargos)
             {
-                Console.Write($"{cargo.Name}:{cargo.Qty} ");
+                _writer.Write($"{cargo.Name}:{cargo.Qty} ");
             }
-            Console.Write($"\n");
+            _writer.Write($"\n");
 
         }
 

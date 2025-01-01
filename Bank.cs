@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -42,7 +43,11 @@ namespace PuertoRicoSpace
         [JsonInclude]
         [JsonConverter(typeof(ShipListConverter))]
         public List<Ship> Ships { get; private set; }
-        public Bank() { }
+        private StreamWriter _writer;
+        public Bank(StreamWriter writer)
+        {
+            _writer = writer;
+        }
         public void SetUp(int playerNum)
         {
             Cargos = new List<CargoAbstract>();
@@ -77,6 +82,12 @@ namespace PuertoRicoSpace
             Cargos.Find(x => x.GetType() == typeof(Coffee)).Add(9);
             Cargos.Find(x => x.GetType() == typeof(Tobacco)).Add(9);
             Cargos.Find(x => x.GetType() == typeof(Indigo)).Add(11);
+            
+            foreach(CargoAbstract cargo in Cargos)
+            {
+                cargo.SetWriter(_writer);
+            }
+
         }
         private void CreateWorkerToBank(int playerNum)
         {
@@ -318,13 +329,13 @@ namespace PuertoRicoSpace
         {
             if (Worker <= 0)
             {
-                Console.WriteLine("***there are no worker on bank***");
+                _writer.WriteLine("***there are no worker on bank***");
                 return 0;
             }
             else if(Worker < request)
             {
                 Worker -= request;
-                Console.WriteLine("***there are not enough worker on bank***");
+                _writer.WriteLine("***there are not enough worker on bank***");
                 return request;
             }
             Worker -= request;
@@ -350,12 +361,12 @@ namespace PuertoRicoSpace
         {
             if(WorkerShip <= 0)
             {
-                Console.WriteLine($"NO Worker on WorkerShip");
+                _writer.WriteLine($"NO Worker on WorkerShip");
                 return 0;
             }
             else if (WorkerShip < request)
             {
-                Console.WriteLine($"not enough Worker on WorkerShip");
+                _writer.WriteLine($"not enough Worker on WorkerShip");
                 int tempWorker = WorkerShip;
                 WorkerShip -= request;
                 return tempWorker;
@@ -367,12 +378,12 @@ namespace PuertoRicoSpace
         {
             if (WorkerShip <= 0)
             {
-                Console.WriteLine($"NO Worker on WorkerShip");
+                _writer.WriteLine($"NO Worker on WorkerShip");
                 return 0;
             }
             else if (WorkerShip < request)
             {
-                Console.WriteLine($"not enough Worker on WorkerShip");
+                _writer.WriteLine($"not enough Worker on WorkerShip");
                 int tempWorker = WorkerShip;
                 return tempWorker;
             }
@@ -391,14 +402,14 @@ namespace PuertoRicoSpace
         {
             if (Money <= 0)
             {
-                Console.WriteLine($"Bank NO MONEY, Bank: {Money}");
+                _writer.WriteLine($"Bank NO MONEY, Bank: {Money}");
                 return 0;
             }
             else if (Money < request)
             {
                 int temp = Money;
                 Money = 0;
-                Console.WriteLine($"Bank not enough, Bank: {Money}");
+                _writer.WriteLine($"Bank not enough, Bank: {Money}");
                 return temp;
             }
             Money -= request;
@@ -415,10 +426,10 @@ namespace PuertoRicoSpace
                 if (ship.Quantity >= ship.MaxCargoQuantity)
                 {
                     ship.Reset();
-                    Console.WriteLine($"***Ship({ship.GetHexHash()}) has been Reset***");
+                    _writer.WriteLine($"***Ship({ship.GetHexHash()}) has been Reset***");
                 }
             }
-            Console.WriteLine("");
+            _writer.WriteLine("");
         }
         public int GetScore(int score)
         {

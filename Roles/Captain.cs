@@ -14,7 +14,7 @@ namespace PuertoRicoSpace
         public override void Action(Player player, PuertoRico game)
         {
             //從船長開始，依照上下家次序，將各項物資運上貨船，以運回舊大陸。任何人依據規則，只要有物資可以運上船，就必須要將物資運上船。物資運輸的輪替會一直重複，直到所有人都無法將物資運上船為止。
-            Console.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{Name} Action");
             List<Player> playerListFromRole = game.GetPlayerListFromRole(player);
             List<bool> checkAllHasStrategy = new List<bool>();
             ResetPlayerStealthShip(game);
@@ -28,8 +28,8 @@ namespace PuertoRicoSpace
                     {
                         if (good.Qty <= 0)//貨物為0不用算策略
                             continue;
-                        Console.WriteLine($"\t\t{p1.Name} p1.UsedStealthShip: {p1.UsedStealthShip}");
-                        Console.WriteLine($"\t\t{p1.Name} p1.CheckBuildingWithWorker: {Utilities.CheckBuildingWithWorker(p1, typeof(Wharf))}");
+                        game._writer.WriteLine($"\t\t{p1.Name} p1.UsedStealthShip: {p1.UsedStealthShip}");
+                        game._writer.WriteLine($"\t\t{p1.Name} p1.CheckBuildingWithWorker: {Utilities.CheckBuildingWithWorker(p1, typeof(Wharf))}");
                         if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船，可以不使用隱形船
                         {
                             Ship stealthShip = new Ship(99, "Stealth");
@@ -47,11 +47,11 @@ namespace PuertoRicoSpace
                                 Strategies.Add(strategy);
                         }
                     }
-                    Console.Write($"\t\tStrategies.Count: {Strategies.Count}");
+                    game._writer.Write($"\t\tStrategies.Count: {Strategies.Count}");
                     if (Strategies.Count == 0)
                     {
                         checkAllHasStrategy.Add(false);
-                        Console.WriteLine($"\t\t{p1.Name} No Strategies");
+                        game._writer.WriteLine($"\t\t{p1.Name} No Strategies");
                         continue;
                     }
 
@@ -69,16 +69,15 @@ namespace PuertoRicoSpace
             game.Bank.CheckCargoShip();//檢查船是否裝滿貨物
 
             //從船長開始，每個玩家必須選擇手中餘下的商品中的一份留下（並非一種，而是只能留有一份(個/箱)），其餘歸還銀行
-            Console.WriteLine($"\tCheck Cargo Spoilage:");
+            game._writer.WriteLine($"\tCheck Cargo Spoilage:");
             CheckCargoSpoilage(player, game);
 
             if (game.Bank.Score <= 0)//分數片不夠，則遊戲結束事件發生
             {
-                Console.WriteLine("\n>>>>分數片不夠，遊戲將在角色輪轉後結束<<<<\n");
+                game._writer.WriteLine("\n>>>>分數片不夠，遊戲將在角色輪轉後結束<<<<\n");
                 game.CallGame();
             }
-
-
+            game._writer.Flush();
         }
         private TransportStrategy CheckStrategy(Ship ship, CargoAbstract good)
         {
@@ -90,8 +89,8 @@ namespace PuertoRicoSpace
         {
             if (Privilege && p1.Role == "Captain   ")
             {
-                Console.WriteLine($"\t\t{p1.Name} get 1 Score(Captain Privilege)");
-                p1.IncreaseScore(game.Bank.GetScore(1));
+                game._writer.WriteLine($"\t\t{p1.Name} get 1 Score(Captain Privilege)");
+                p1.AddScore(game.Bank.GetScore(1));
                 Privilege = false;
             }
             if (executionStrategy.IsStealth)
@@ -101,28 +100,28 @@ namespace PuertoRicoSpace
         {
             foreach (Player p1 in game.GetPlayerListFromRole(player))
             {
-                Console.WriteLine("");
+                game._writer.WriteLine("");
                 List<CargoAbstract> cargos = p1.Cargos.Where(x => x.Qty > 0).OrderByDescending(x => x.Qty).ToList();
                 bool hasSmallwarehouse = Utilities.CheckBuildingWithWorker(p1, typeof(Smallwarehouse));
                 bool hasLargewarehouse = Utilities.CheckBuildingWithWorker(p1, typeof(Largewarehouse));
                 int retainLimit = 0;//計算可以持有幾種商品可以不腐敗
                 if (hasSmallwarehouse) retainLimit += 1;
                 if (hasLargewarehouse) retainLimit += 2;
-                //Console.WriteLine($"\t\t{p1.Name} cargos.Count: {cargos.Count}");
+                //game._writer.WriteLine($"\t\t{p1.Name} cargos.Count: {cargos.Count}");
                 p1.ShowCargo();
-                Console.WriteLine($"\t\t{p1.Name} retainLimit: {retainLimit}");
+                game._writer.WriteLine($"\t\t{p1.Name} retainLimit: {retainLimit}");
 
 
                 if(cargos.Count == 0 || cargos == null)//貨品皆為0，沒有貨品可以腐爛
                 {
-                    Console.WriteLine($"\t\t{p1.Name} No Cargo Spoilage");
+                    game._writer.WriteLine($"\t\t{p1.Name} No Cargo Spoilage");
                     continue;
                 }
 
                 for (int i = 0; i < retainLimit; i++)//有倉庫就保留
                 {
                     if (cargos.Count == 0) continue;
-                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Warehouse)");
+                    game._writer.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Warehouse)");
                     cargos.RemoveAt(0);
                 }
 
@@ -130,32 +129,32 @@ namespace PuertoRicoSpace
 
                 if(cargos[0].Qty == 1)
                 {
-                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Spoilage Rule)");
+                    game._writer.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} {cargos[0].Qty} (Spoilage Rule)");
                 }
                 else if (cargos[0].Qty > 1)//貨物多餘1的就腐爛
                 {
-                    Console.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} 1 (Spoilage Rule)");
+                    game._writer.WriteLine($"\t\t{p1.Name} can keep {cargos[0].Name} 1 (Spoilage Rule)");
                     int decreaseCargo = p1.DecreaseCargo(cargos[0].Name, cargos[0].Qty - 1);
-                    //Console.WriteLine($"\t\t{p1.Name} decrease {cargos[0].Name} {decreaseCargo}, bank{game.Bank.GetCargoQty(cargos[0].GetType())}");
+                    //game._writer.WriteLine($"\t\t{p1.Name} decrease {cargos[0].Name} {decreaseCargo}, bank{game.Bank.GetCargoQty(cargos[0].GetType())}");
                     game.Bank.AddCargo(cargos[0].GetType(), decreaseCargo);
-                    Console.WriteLine($"\t\t{p1.Name} {cargos[0].Name} Spoilage {decreaseCargo}");
-                    //Console.WriteLine($"\t\tbank{game.Bank.GetCargoQty(cargos[0].GetType())}");
+                    game._writer.WriteLine($"\t\t{p1.Name} {cargos[0].Name} Spoilage {decreaseCargo}");
+                    //game._writer.WriteLine($"\t\tbank{game.Bank.GetCargoQty(cargos[0].GetType())}");
                     //} else {
                 }
                 cargos.RemoveAt(0);
 
                 if (cargos.Count == 0) continue;
-                //Console.WriteLine($"\t\t\t{p1.Name} cargos.Count: {cargos.Count}");
+                //game._writer.WriteLine($"\t\t\t{p1.Name} cargos.Count: {cargos.Count}");
 
                 foreach (CargoAbstract cargo in cargos)//剩下的全部都繳回
                 {
-                    //Console.WriteLine($"\t\t***");
-                    //Console.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
+                    //game._writer.WriteLine($"\t\t***");
+                    //game._writer.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
                     string cargoName = cargo.Name;
                     int cargoQty = cargo.Qty;
                     game.Bank.AddCargo(cargo.GetType(), p1.DecreaseCargo(cargoName, cargoQty));
-                    Console.WriteLine($"\t\t{p1.Name} {cargo.Name} Spoilage {cargoQty}");
-                   // Console.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
+                    game._writer.WriteLine($"\t\t{p1.Name} {cargo.Name} Spoilage {cargoQty}");
+                   // game._writer.WriteLine($"\t\tbank {game.Bank.GetCargoQty(cargo.GetType())}");
                 }
 
                 p1.ShowCargo();
@@ -195,21 +194,21 @@ namespace PuertoRicoSpace
         }
         public void Transport(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t\t{player.Name} Transport {Score} {_good.Name} to the ship({_ship.GetHexHash()})({_ship.Type})");
+            game._writer.WriteLine($"\t\t{player.Name} Transport {Score} {_good.Name} to the ship({_ship.GetHexHash()})({_ship.Type})");
             player.DecreaseCargo(_good.Name, Score);
-            player.IncreaseScore(Score);
+            player.AddScore(Score);
             _ship.AddQuantity(Score);
             game.Bank.GetScore(Score);
             //ShowStrategyInfo(this);
         }
-        public void ShowStrategyInfo(TransportStrategy strategy)
-        {
-            Console.WriteLine($"\t\t\tScore: {strategy.Score}");
-            Console.WriteLine($"\t\t\tCargo: {strategy._good.Name}");
-            Console.WriteLine($"\t\t\tCargo Qty: {strategy._good.Qty}");
-            Console.WriteLine($"\t\t\tship MaxCargoQuantity: {strategy._ship.MaxCargoQuantity}");
-            Console.WriteLine($"\t\t\tship.Quantity: {strategy._ship.Quantity}");
-        }
+        //public void ShowStrategyInfo(TransportStrategy strategy)
+        //{
+        //    game._writer.WriteLine($"\t\t\tScore: {strategy.Score}");
+        //    game._writer.WriteLine($"\t\t\tCargo: {strategy._good.Name}");
+        //    game._writer.WriteLine($"\t\t\tCargo Qty: {strategy._good.Qty}");
+        //    game._writer.WriteLine($"\t\t\tship MaxCargoQuantity: {strategy._ship.MaxCargoQuantity}");
+        //    game._writer.WriteLine($"\t\t\tship.Quantity: {strategy._ship.Quantity}");
+        //}
     }
 
 }

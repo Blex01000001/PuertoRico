@@ -15,7 +15,7 @@ namespace PuertoRicoSpace
         public override void Action(Player player, PuertoRico game)
         {
             //開拓者選擇一個打開的郊區方塊，或者拿一個採礦場（特權），放在自己的郊區空格上；接著，下家可以從剩下打開的郊區方塊中選擇一個，放在自己的郊區空格上；依此類推。
-            Console.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{Name} Action");
             foreach (Player p1 in game.GetPlayerListFromRole(player)) //從開拓者開始選農田，接著下家，依此類推
             {
                 BuildingAbstract selectedBuilding = null;
@@ -31,12 +31,12 @@ namespace PuertoRicoSpace
 
                 if (game.Bank.AvailableFarms.Count <= 0)//正面朝上的農天方塊為0
                     {
-                    Console.WriteLine("***No available Farms***");
+                    game._writer.WriteLine("***No available Farms***");
                     continue;
                 }
                 else if (p1.FarmList.Count >= 12)//玩家農田已滿
                 {
-                    Console.WriteLine($"***{p1.Name} field is full***");
+                    game._writer.WriteLine($"***{p1.Name} field is full***");
                     continue;
                 }
                 //開拓者可以選擇一個打開的郊區方塊，或者拿一個採礦場（特權）
@@ -58,26 +58,26 @@ namespace PuertoRicoSpace
                 {
                     int worker = game.Bank.GetWorkerFromBank(1);
                     selectedBuilding.IncreaseWorker(worker);
-                    p1.IncreaseWorker(worker);
-                    Console.WriteLine($"\t\t{p1.Name} get {worker} worker from bank and put it on the {selectedBuilding.Name}({selectedBuilding.GetHexHash()}) (Hospice)");
+                    p1.AddWorker(worker);
+                    game._writer.WriteLine($"\t\t{p1.Name} get {worker} worker from bank and put it on the {selectedBuilding.Name}({selectedBuilding.GetHexHash()}) (Hospice)");
                 }
                 else if (Utilities.CheckBuildingWithWorker(p1, typeof(Hospice)) && game.Bank.TryGetWorkerFromWorkerShip(1) > 0)
                 {
                     int worker = game.Bank.GetWorkerFromWorkerShip(1);
                     selectedBuilding.IncreaseWorker(worker);
-                    p1.IncreaseWorker(worker);
-                    Console.WriteLine($"\t\t{p1.Name} get {worker} worker from workership and put it on the {selectedBuilding.Name}({selectedBuilding.GetHexHash()}) (Hospice)");
+                    p1.AddWorker(worker);
+                    game._writer.WriteLine($"\t\t{p1.Name} get {worker} worker from workership and put it on the {selectedBuilding.Name}({selectedBuilding.GetHexHash()}) (Hospice)");
                 }
                 game.ArrangeFarms();
             }
-
+            game._writer.Flush();
         }
         private BuildingAbstract GetQuarry(Player p1, PuertoRico game)
         {
             BuildingAbstract quarry = game.Bank.QuarryFields[0];
             p1.FarmList.Add(quarry);
             game.Bank.QuarryFields.Remove(quarry);
-            Console.WriteLine($"\t{p1.Name} select the {quarry.Name}({quarry.GetHexHash()}");
+            game._writer.WriteLine($"\t{p1.Name} select the {quarry.Name}({quarry.GetHexHash()}");
             return quarry;
         }
         private BuildingAbstract GetField(Player p1, PuertoRico game)
@@ -85,7 +85,7 @@ namespace PuertoRicoSpace
             BuildingAbstract farm = game.Bank.AvailableFarms[0];
             p1.FarmList.Add(farm);
             game.Bank.AvailableFarms.Remove(farm);
-            Console.WriteLine($"\t{p1.Name} select the {farm.Name}({farm.GetHexHash()})");
+            game._writer.WriteLine($"\t{p1.Name} select the {farm.Name}({farm.GetHexHash()})");
             return farm;
         }
         private BuildingAbstract GetHideField(Player p1, PuertoRico game)
@@ -93,7 +93,7 @@ namespace PuertoRicoSpace
             BuildingAbstract farm = game.Bank.HideFarms[0];
             p1.FarmList.Add(farm);
             game.Bank.HideFarms.Remove(farm);
-            Console.WriteLine($"\t{p1.Name} get the {farm.Name}({farm.GetHexHash()})(Hacienda)");
+            game._writer.WriteLine($"\t{p1.Name} get the {farm.Name}({farm.GetHexHash()})(Hacienda)");
             return farm;
         }
     }

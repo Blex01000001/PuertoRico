@@ -77,7 +77,7 @@ namespace PuertoRicoSpace
                     return selected;
                 }
             }
-            throw new InvalidOperationException("***未能選取貨物***");
+            throw new InvalidOperationException("***未能選取***");
         }
         /// <summary>
         /// 以Priority作為機率基準重新排列list裡的物件，但不是完全依照Priority做排序，高Priority只是比較高機率出現在前面

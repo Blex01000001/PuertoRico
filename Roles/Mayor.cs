@@ -12,18 +12,18 @@ namespace PuertoRicoSpace
 
         public override void Action(Player player, PuertoRico game)
         {
-            Console.WriteLine($"\t{Name} Action");
-            Console.WriteLine($"\t{game.Bank.WorkerShip} Worker on WorkerShip");
-            Console.WriteLine($"\t{player.Name} get 1 worker from bank(Mayor)");
-            player.IncreaseWorker(game.Bank.GetWorkerFromBank(1));//市長特權
+            game._writer.WriteLine($"\t{Name} Action");
+            game._writer.WriteLine($"\t{game.Bank.WorkerShip} Worker on WorkerShip");
+            game._writer.WriteLine($"\t{player.Name} get 1 worker from bank(Mayor)");
+            player.AddWorker(game.Bank.GetWorkerFromBank(1));//市長特權
             while (game.Bank.WorkerShip > 0)
             {
                 foreach (Player p1 in game.GetPlayerListFromRole(player))//從市長開始每個人輪流拿工人，拿到移民船上沒有工人
                 {
                     if (game.Bank.WorkerShip <= 0)
                         break;
-                    p1.IncreaseWorker(game.Bank.GetWorkerFromWorkerShip(1));
-                    Console.WriteLine($"\t{p1.Name} get 1 worker from WorkerShip, WorkerShip remaining: {game.Bank.WorkerShip}");
+                    p1.AddWorker(game.Bank.GetWorkerFromWorkerShip(1));
+                    game._writer.WriteLine($"\t{p1.Name} get 1 worker from WorkerShip, WorkerShip remaining: {game.Bank.WorkerShip}");
                 }
             }
             int totalBuildingEmptyCircle = 0;
@@ -38,20 +38,21 @@ namespace PuertoRicoSpace
                     if (EmptyCircleList.Count <= 0)
                         break;
                     EmptyCircleList[0].IncreaseWorker(1);
-                    Console.WriteLine($"\t\t{p2.Name} put 1 worker on {EmptyCircleList[0].Name}({EmptyCircleList[0].GetHexHash()})");
+                    game._writer.WriteLine($"\t\t{p2.Name} put 1 worker on {EmptyCircleList[0].Name}({EmptyCircleList[0].GetHexHash()})");
                     EmptyCircleList.RemoveAt(0);
                 }
                 totalBuildingEmptyCircle += EmptyCircleList.Where(x => x.Type == "Building").ToList().Count;
             }
-            Console.WriteLine($"\tTotal Player Empty Circle(Building): {totalBuildingEmptyCircle}");
+            game._writer.WriteLine($"\tTotal Player Empty Circle(Building): {totalBuildingEmptyCircle}");
 
             game.Bank.ResetWorkerShip(totalBuildingEmptyCircle > game.PlayerNum ? totalBuildingEmptyCircle : game.PlayerNum);
             game.Bank.GetWorkerFromBank(game.Bank.WorkerShip);
             if (game.Bank.Worker <= 0)//移民不夠補充移民船時，則遊戲結束事件發生
             {
-                Console.WriteLine("\n>>>>移民不夠補充移民船，遊戲將在角色輪轉後結束<<<<\n");
+                game._writer.WriteLine("\n>>>>移民不夠補充移民船，遊戲將在角色輪轉後結束<<<<\n");
                 game.CallGame();
             }
+            game._writer.Flush();
         }
     }
 
