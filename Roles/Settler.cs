@@ -20,11 +20,11 @@ namespace PuertoRicoSpace
             {
                 BuildingAbstract selectedBuilding = null;
                 bool ConstructionhutRules = Utilities.CheckBuildingWithWorker(p1, typeof(Constructionhut));//檢查玩家是否有建築舍
-                bool HaciendaRules = Utilities.CheckBuildingWithWorker(p1, typeof(Constructionhut));//檢查玩家是否有農莊
+                bool HaciendaRules = Utilities.CheckBuildingWithWorker(p1, typeof(Hacienda));//檢查玩家是否有農莊
                 //農莊作用時，當開拓者出現時，玩家可以（也可以不要）從背面朝上的農田方塊中抽取一張，放在自己的郊區空格上。然後才從正面朝上的農天方塊中選擇方塊（當自己是開拓者的時候，可以選擇採礦場）。
                 //當背面朝上的農田方塊已經沒了，就不可以抽取。
                 //不管農田方塊是不是玩家要的都必須接受
-                if (p1.FarmList.Count < 12 && game.Bank.HideFarms.Count > 0)
+                if (p1.FarmList.Count < 12 && game.Bank.HideFarms.Count > 0 && HaciendaRules)
                 {
                     GetHideField(p1, game);
                 }

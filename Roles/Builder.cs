@@ -43,6 +43,23 @@ namespace PuertoRicoSpace
                     //扣錢還給銀行
                     p1.DecreaseMoney(buildingCost);
                     game.Bank.AddMoney(buildingCost);
+
+                    bool UniversityRule = Utilities.CheckBuildingWithWorker(p1, typeof(Hospice));//檢查玩家是否有大學
+                    //大學作用時，當建築師出現時，玩家可以在興建建築的同時，從銀行獲得一個移民直接作用于該建築上。倘若銀行沒有移民了，他可以直接從移民船上拿。倘若移民船上也沒了，則他就無法得到移民。不論建築物容納移民的數量為何，他都只能獲得最多一個移民。
+                    if (UniversityRule && game.Bank.TryGetWorkerFromBank(1) > 0)
+                    {
+                        int worker = game.Bank.GetWorkerFromBank(1);
+                        tempBuilding.IncreaseWorker(worker);
+                        p1.AddWorker(worker);
+                        game._writer.WriteLine($"\t\t{p1.Name} get {worker} worker from bank and put it on the {tempBuilding.Name}({tempBuilding.GetHexHash()}) (University)");
+                    }
+                    else if (UniversityRule && game.Bank.TryGetWorkerFromWorkerShip(1) > 0)
+                    {
+                        int worker = game.Bank.GetWorkerFromWorkerShip(1);
+                        tempBuilding.IncreaseWorker(worker);
+                        p1.AddWorker(worker);
+                        game._writer.WriteLine($"\t\t{p1.Name} get {worker} worker from workership and put it on the {tempBuilding.Name}({tempBuilding.GetHexHash()}) (University)");
+                    }
                     break;
                 }
                 if(p1.BuildingList.Count >= 12)//在建築師出現時，至少有一個人將12個建築空格蓋滿則發生遊戲結束事件

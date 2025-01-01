@@ -23,6 +23,7 @@ namespace PuertoRicoSpace
                 checkAllHasStrategy.Clear();
                 foreach (Player p1 in playerListFromRole)
                 {
+                    bool HarborRule = Utilities.CheckBuildingWithWorker(p1, typeof(Hospice));//檢查玩家是否有港口
                     List<TransportStrategy> Strategies = new List<TransportStrategy>();
                     foreach (CargoAbstract good in p1.Cargos)
                     {
@@ -60,8 +61,12 @@ namespace PuertoRicoSpace
                     TransportStrategy executionStrategy = Strategies.First(x => x.Score == topScore);
                     executionStrategy.Transport(p1, game);//執行分數最高的第一個策略
                     checkAllHasStrategy.Add(true);
-                    //船長能夠將物資運上船，則他在整段運輸物資的過程可以多得一分（特權）
-                    CaptainPrivilege(p1,game, executionStrategy);
+                    if (HarborRule)//港口作用時，當船長出現時，每次輪到他運物資上船，只要他有物資可以運上船，他就可以多獲得一分。在同一次船長出現時，港口的作用可以進行很多次。可以和碼頭一起作用。
+                    {
+                        p1.AddScore(1);
+                        game._writer.WriteLine($"\t\t{p1.Name} get 1 Score(HarborRule)");
+                    }
+                    CaptainPrivilege(p1,game, executionStrategy);//船長能夠將物資運上船，則他在整段運輸物資的過程可以多得一分（特權）
                 }
 
             } while (checkAllHasStrategy.Exists(x => x == true));

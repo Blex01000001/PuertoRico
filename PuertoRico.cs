@@ -366,7 +366,12 @@ namespace PuertoRicoSpace
         }
         private void CheckBuildingScore(Player player)
         {
-            if (Utilities.CheckBuildingWithWorker(player, typeof(Guildhall)))//商會，若商會作用，最後計算點數時，大型生產廠房多計兩分，小型生產廠房多計一分。
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Customshouse)))//海關，若海關作用，最後計算點數時，統計（運物資上船得到的）得分方塊總分，無條件舍去每四分多計一分。
+            {
+                int score = (int)(player.Score / 4);
+                player.AddScore(score);
+            }
+            if (Utilities.CheckBuildingWithWorker(player, typeof(Guildhall)))//公會廳，若商會作用，最後計算點數時，大型生產廠房多計兩分，小型生產廠房多計一分。
             {
                 int smallCount = player.GetAllBuildings().Where(x => x.Scale == "Small").ToList().Count;
                 player.AddScore(smallCount);
@@ -395,11 +400,6 @@ namespace PuertoRicoSpace
             if (Utilities.CheckBuildingWithWorker(player, typeof(Fortress)))//堡壘，若要塞作用，最後計算點數時，統計遊戲盤上所有移民總數，無條件舍去每三移民多計一分。
             {
                 int score = (int)(player.Worker / 3);
-                player.AddScore(score);
-            }
-            if (Utilities.CheckBuildingWithWorker(player, typeof(Customshouse)))//海關，若海關作用，最後計算點數時，統計（運物資上船得到的）得分方塊總分，無條件舍去每四分多計一分。
-            {
-                int score = (int)(player.Score / 4);
                 player.AddScore(score);
             }
             if (Utilities.CheckBuildingWithWorker(player, typeof(Cityhall)))//市政廳，若市政廳作用，最後計算點數時，每座紫色的特殊功能建築（不論大小）多計一分。
