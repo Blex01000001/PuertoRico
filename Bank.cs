@@ -43,12 +43,10 @@ namespace PuertoRicoSpace
         [JsonInclude]
         [JsonConverter(typeof(ShipListConverter))]
         public List<Ship> Ships { get; private set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         private StreamWriter _writer;
-        public Bank(StreamWriter writer)
-        {
-            _writer = writer;
-        }
-        public void SetUp(int playerNum)
+        public Bank() { }
+        public void SetUp(int playerNum, StreamWriter writer)
         {
             Cargos = new List<CargoAbstract>();
             QuarryFields = new List<BuildingAbstract>();
@@ -56,6 +54,7 @@ namespace PuertoRicoSpace
             AvailableFarms = new List<BuildingAbstract>();
             HideFarms = new List<BuildingAbstract>();
             AvailableBuildings = new List<BuildingAbstract>();
+            _writer = writer;
 
             CreateCargos();
             CreateWorkerToBank(playerNum);

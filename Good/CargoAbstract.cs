@@ -16,6 +16,7 @@ namespace PuertoRicoSpace
         public abstract string Name { get; }
         [JsonInclude]
         public int Qty { get; private set; } // 通用的屬性，由基類直接管理
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public StreamWriter _writer;
         protected CargoAbstract()
         {

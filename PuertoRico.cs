@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace PuertoRicoSpace
 {
@@ -22,7 +23,8 @@ namespace PuertoRicoSpace
         public int Round { get; private set; }
         public int TotalScore { get; private set; }
         private bool EndGame = false;
-        public StreamWriter _writer;
+        [JsonIgnore]
+        public StreamWriter _writer { get; private set; }
         private string _filePath;
 
         public PuertoRico(int playerNum, Guid guid)
@@ -32,9 +34,9 @@ namespace PuertoRicoSpace
             Stopwatch timer = new Stopwatch();
             timer.Start();
             this.PlayerNum = playerNum;
-            Bank = new Bank(_writer);
+            Bank = new Bank();
             Shop = new List<CargoAbstract>();
-            Bank.SetUp(PlayerNum);
+            Bank.SetUp(PlayerNum, _writer);
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
             GameStartSetUp(PlayerNum);
@@ -157,7 +159,7 @@ namespace PuertoRicoSpace
             PlayerListByGovernor = new List<Player>();
             for (int i = 0; i < playerNum; i++)
             {
-                Player player = new Player(Convert.ToChar(65 + i).ToString(), _writer);
+                Player player = new Player(Convert.ToChar(65 + i).ToString());
                 PlayerList.Add(player);
                 PlayerListByGovernor.Add(player);
             }
@@ -245,10 +247,12 @@ namespace PuertoRicoSpace
             _writer.Write($"Field:\n");
             foreach (Player player in PlayerList)
             {
-                _writer.Write($"{player.Name} ");
+                _writer.Write($"{player.Name}: ");
                 foreach (BuildingAbstract field in player.FarmList)
                 {
-                    _writer.Write($"{field.Name}({field.GetHexHash()})({field.Worker}/{field.MaxWorker})\t, ");
+                    string str = field.Name + "(" + field.GetHexHash() + ")";
+                    string strWorker = "(" + field.Worker + "/" + field.MaxWorker + ")";
+                    _writer.Write("{0,-17}{1,6},  ", str, strWorker);
                 }
                 _writer.Write($"\n");
             }
@@ -256,10 +260,12 @@ namespace PuertoRicoSpace
             _writer.Write($"\nBuilding:\n");
             foreach (Player player in PlayerList)
             {
-                _writer.Write($"{player.Name} ");
+                _writer.Write($"{player.Name}: ");
                 foreach (BuildingAbstract building in player.BuildingList)
                 {
-                    _writer.Write($"{building.Name} ({building.GetHexHash()}) ({building.Worker}/{building.MaxWorker}), ");
+                    string str = building.Name + "(" + building.GetHexHash() + ")";
+                    string strWorker = "(" + building.Worker + "/" + building.MaxWorker + ")";
+                    _writer.Write("{0,-23}{1,6},  ", str, strWorker);
                 }
                 _writer.Write($"\n");
             }

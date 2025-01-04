@@ -19,22 +19,26 @@ namespace PuertoRicoSpace
         public int Worker { get; private set; }
         [JsonInclude]
         public int Score { get; private set; }
-        [JsonInclude]
+        [JsonIgnore]
         public string Role { get; private set; }
-        [JsonInclude][JsonConverter(typeof(CargoListConverter))]
-        public List<CargoAbstract> Cargos { get; private set; }
-        [JsonInclude][JsonConverter(typeof(BuildingListConverter))]
-        public List<BuildingAbstract> FarmList { get; private set; }
-        [JsonInclude][JsonConverter(typeof(BuildingListConverter))]
-        public List<BuildingAbstract> BuildingList { get; private set; }
         [JsonInclude]
+        [JsonConverter(typeof(CargoListConverter))]
+        public List<CargoAbstract> Cargos { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
+        public List<BuildingAbstract> FarmList { get; private set; }
+        [JsonInclude]
+        [JsonConverter(typeof(BuildingListConverter))]
+        public List<BuildingAbstract> BuildingList { get; private set; }
+        [JsonIgnore]
         public bool UsedStealthShip { get; private set; }
-        private StreamWriter _writer;
+        //[JsonIgnore]
+        //public StreamWriter _writer { get; private set; }
 
         //[JsonConstructor]
-        public Player(string name, StreamWriter writer)
+        public Player(string name)
         {
-            _writer = writer;
+            //_writer = writer;
             Cargos = new List<CargoAbstract>();
             FarmList = new List<BuildingAbstract>();
             BuildingList = new List<BuildingAbstract>();
@@ -156,13 +160,12 @@ namespace PuertoRicoSpace
         }
         public void ShowCargo()
         {
-            _writer.Write($"\t\t{Name} cargos: ");
-            foreach (CargoAbstract cargo in Cargos)
-            {
-                _writer.Write($"{cargo.Name}:{cargo.Qty} ");
-            }
-            _writer.Write($"\n");
-
+            //_writer.Write($"\t\t{Name} cargos: ");
+            //foreach (CargoAbstract cargo in Cargos)
+            //{
+            //    _writer.Write($"{cargo.Name}:{cargo.Qty} ");
+            //}
+            //_writer.Write($"\n");
         }
 
     }
