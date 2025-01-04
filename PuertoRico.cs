@@ -83,7 +83,8 @@ namespace PuertoRicoSpace
                 Round++;
             }
             CalculateScore();
-
+            ShowCham();
+            ShowPlayerStatus();
             timer.Stop();
             // Get the elapsed time as a TimeSpan value.
             ElapsedTime = timer.Elapsed;
@@ -455,7 +456,12 @@ namespace PuertoRicoSpace
             string sec = ElapsedTime.TotalSeconds.ToString("0.000");
             //Console.WriteLine("{0,8}{1,7}", "Time", "Score");
             Console.WriteLine("{0,8}{1,7}{2,7}", sec, TotalScore, Round);
-
+        }
+        public void ShowCham()
+        {
+            int maxScore = PlayerList.Max(x => x.Score);
+            Player champion = PlayerList.FindAll(x => x.Score == maxScore).OrderByDescending(x => x.Money).ToList()[0];
+            _writer.WriteLine($"\n>>>> Champion: {champion.Name}!!! <<<<\n");
         }
     }
 }

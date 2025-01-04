@@ -23,6 +23,7 @@ namespace PuertoRicoSpace
             Score = 4;
             Cost = 10;
             MaxWorker = 1;
+            Occupy = 2;
         }
     }
 }

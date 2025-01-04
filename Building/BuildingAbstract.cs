@@ -24,6 +24,7 @@ namespace PuertoRicoSpace
         public int Score { get; protected set; }
         public int Level { get; protected set; }
         public int Priority { get; protected set; }
+        public int Occupy { get; protected set; }
         protected BuildingAbstract()
         {
             Worker = 0; // 初始工作人數為 0
@@ -40,7 +41,8 @@ namespace PuertoRicoSpace
             int cost = 0,
             int score = 0,
             int level = 0,
-            int priority = 0
+            int priority = 10,
+            int occupy = 1
         )
         {
             Name = name;
@@ -53,6 +55,7 @@ namespace PuertoRicoSpace
             Score = score;
             Level = level;
             Priority = priority;
+            Occupy = occupy;
         }
         public void SetPriority(int priority) => Priority = priority;
         public void ResetWorker() => Worker = 0;

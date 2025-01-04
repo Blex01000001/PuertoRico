@@ -29,8 +29,8 @@ namespace PuertoRicoSpace
                     {
                         if (good.Qty <= 0)//貨物為0不用算策略
                             continue;
-                        game._writer.WriteLine($"\t\t{p1.Name} p1.UsedStealthShip: {p1.UsedStealthShip}");
-                        game._writer.WriteLine($"\t\t{p1.Name} p1.CheckBuildingWithWorker: {Utilities.CheckBuildingWithWorker(p1, typeof(Wharf))}");
+                        //game._writer.WriteLine($"\t\t{p1.Name} p1.UsedStealthShip: {p1.UsedStealthShip}");
+                        //game._writer.WriteLine($"\t\t{p1.Name} p1.CheckBuildingWithWorker: {Utilities.CheckBuildingWithWorker(p1, typeof(Wharf))}");
                         if (Utilities.CheckBuildingWithWorker(p1, typeof(Wharf)) && p1.UsedStealthShip)//隱形船，可以不使用隱形船
                         {
                             Ship stealthShip = new Ship(99, "Stealth");
@@ -48,7 +48,7 @@ namespace PuertoRicoSpace
                                 Strategies.Add(strategy);
                         }
                     }
-                    game._writer.Write($"\t\tStrategies.Count: {Strategies.Count}");
+                    //game._writer.Write($"\t\tStrategies.Count: {Strategies.Count}");
                     if (Strategies.Count == 0)
                     {
                         checkAllHasStrategy.Add(false);

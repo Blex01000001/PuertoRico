@@ -29,6 +29,10 @@ namespace PuertoRicoSpace
                         game._writer.WriteLine($"\t\t{p1.Name} PASS buy the building");
                         break;
                     }
+                    if(tempBuilding.Occupy + p1.BuildingList.Sum(x => x.Occupy) > 12)//玩家沒空間放置該建築物
+                    {
+                        continue;
+                    }
                     int containBuildingIndex = p1.GetAllBuildings().FindIndex(x => x.Name == tempBuilding.Name);
                     if (containBuildingIndex >= 0)//檢查玩家有沒有重複的建築
                         continue;
@@ -62,7 +66,7 @@ namespace PuertoRicoSpace
                     }
                     break;
                 }
-                if(p1.BuildingList.Count >= 12)//在建築師出現時，至少有一個人將12個建築空格蓋滿則發生遊戲結束事件
+                if(p1.BuildingList.Sum(x => x.Occupy) >= 12)//在建築師出現時，至少有一個人將12個建築空格蓋滿則發生遊戲結束事件
                 {
                     game._writer.WriteLine($"\n>>>>{p1.Name}建築空格已滿，遊戲將在輪轉後結束<<<<\n");
                     game.CallGame();
