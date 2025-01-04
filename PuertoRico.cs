@@ -26,9 +26,11 @@ namespace PuertoRicoSpace
         [JsonIgnore]
         public StreamWriter _writer { get; private set; }
         private string _filePath;
+        public Guid Guid { get; private set; }
 
         public PuertoRico(int playerNum, Guid guid)
         {
+            this.Guid = guid;
             _filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".txt";
             _writer = new StreamWriter(_filePath);
             Stopwatch timer = new Stopwatch();
@@ -455,7 +457,7 @@ namespace PuertoRicoSpace
         {
             string sec = ElapsedTime.TotalSeconds.ToString("0.000");
             //Console.WriteLine("{0,8}{1,7}", "Time", "Score");
-            Console.WriteLine("{0,8}{1,7}{2,7}", sec, TotalScore, Round);
+            Console.WriteLine("{0,8}{1,7}{2,7}  {3,-40}", sec, TotalScore, Round, Guid);
         }
         public void ShowCham()
         {

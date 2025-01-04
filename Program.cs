@@ -23,12 +23,12 @@ namespace PuertoRicoSpace
 
         static void Main(string[] args)
         {
-            Console.WriteLine("{0,8}{1,7}{2,7}", "Time", "Score", "Round");
-            Guid guid = Guid.NewGuid();
+            Console.WriteLine("{0,8}{1,7}{2,7}  {3,-40}", "Time", "Score", "Round","GUID");
+            //Guid guid = Guid.NewGuid();
             for (int i = 0; i < 1; i++)
             {
                 int ii = i;
-                Thread thread = new Thread(() => puertoRico1(guid));
+                Thread thread = new Thread(() => puertoRico1());
 
                 thread.Start();
 
@@ -36,38 +36,39 @@ namespace PuertoRicoSpace
 
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
-            Task.Delay(2000).Wait();
+            //Task.Delay(2000).Wait();
             //timer.Stop();
             //TimeSpan ElapsedTime = timer.Elapsed;
             //_writer.WriteLine($"thread cost {ElapsedTime.TotalMilliseconds}");
             //_writer.WriteLine("{0,15}{1,15}{2,7}{3,7}", "1234567890", "123456", "987", "6666");
 
 
-            string filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
-            string jsonInput = File.ReadAllText(filePath);
+            //string filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
+            //string jsonInput = File.ReadAllText(filePath);
             //var options = new JsonSerializerOptions
             //{
             //    IncludeFields = false // 禁止欄位參與序列化和反序列化
             //};
-            data da = JsonSerializer.Deserialize<data>(jsonInput);
-            Console.WriteLine(da.PlayerNum);
-            Console.WriteLine(da.ElapsedTime);
-            Console.WriteLine(da.Round);
-            Console.WriteLine(da.TotalScore);
-            da.ShowBankStatus();
-            da.ShowPlayerStatus();
-            da.ShowCargo();
+            //data da = JsonSerializer.Deserialize<data>(jsonInput);
+            //Console.WriteLine(da.PlayerNum);
+            //Console.WriteLine(da.ElapsedTime);
+            //Console.WriteLine(da.Round);
+            //Console.WriteLine(da.TotalScore);
+            //da.ShowBankStatus();
+            //da.ShowPlayerStatus();
+            //da.ShowCargo();
 
             Console.ReadLine();
         }
-        static private void puertoRico1(Guid guid)
+        static private void puertoRico1()
         {
             List<PuertoRico> puertoRico = new List<PuertoRico>();
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+1;
+            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2;
             do
             {
+                Guid guid = Guid.NewGuid();
                 string path = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
                 PuertoRico game = new PuertoRico(5, guid);
                 if (game.TotalScore > 10)
@@ -88,9 +89,12 @@ namespace PuertoRicoSpace
                 streamWriter.Write(input);
                 streamWriter.Flush();
                 streamWriter.Close();
-            } while (puertoRico.Count < 1);
+            } while (puertoRico.Count < 1000);
             timer.Stop();
             TimeSpan ElapsedTime = timer.Elapsed;
+            Console.WriteLine($"ElapsedTime: {ElapsedTime}");
+            Console.WriteLine($"Average: {ElapsedTime.TotalMilliseconds/ puertoRico.Count} ms/per game");
+
             //string name = "thread " + (num) + " cost " + ElapsedTime.TotalMilliseconds;
             //string path1 = "C:\\Users\\AUser\\Downloads\\" + name + ".json";
             //StreamWriter streamWriter1 = new StreamWriter(path1);
