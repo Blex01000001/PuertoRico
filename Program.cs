@@ -15,23 +15,36 @@ using System.Xml.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Timers;
 
 namespace PuertoRicoSpace
 {
     internal class Program
     {
-
         static void Main(string[] args)
         {
             Console.WriteLine("{0,8}{1,7}{2,7}  {3,-40}", "Time", "Score", "Round","GUID");
             //Guid guid = Guid.NewGuid();
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 50; i++)
             {
                 int ii = i;
-                Thread thread = new Thread(() => puertoRico1());
+                Thread thread = new Thread(() =>
+                {
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
+                    
+                    int managedThreadId = Thread.CurrentThread.ManagedThreadId;
+                    int currentThreadId = (int)Utilities.GetCurrentThreadId();
+                    Console.WriteLine($"{managedThreadId} start");
+                    puertoRico1();
+                    timer.Stop();
+                    TimeSpan ElapsedTime = timer.Elapsed;
+
+                    Console.WriteLine("ID:{0,3} {1,5} Time:{2,7}s", managedThreadId, currentThreadId, ElapsedTime.TotalSeconds);
+                });
 
                 thread.Start();
-
             }
 
             //Stopwatch timer = new Stopwatch();
@@ -62,9 +75,9 @@ namespace PuertoRicoSpace
         }
         static private void puertoRico1()
         {
-            List<PuertoRico> puertoRico = new List<PuertoRico>();
             Stopwatch timer = new Stopwatch();
             timer.Start();
+            List<PuertoRico> puertoRico = new List<PuertoRico>();
             ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2;
             do
             {
@@ -89,11 +102,11 @@ namespace PuertoRicoSpace
                 streamWriter.Write(input);
                 streamWriter.Flush();
                 streamWriter.Close();
-            } while (puertoRico.Count < 1000);
+            } while (puertoRico.Count < 50);
             timer.Stop();
             TimeSpan ElapsedTime = timer.Elapsed;
-            Console.WriteLine($"ElapsedTime: {ElapsedTime}");
-            Console.WriteLine($"Average: {ElapsedTime.TotalMilliseconds/ puertoRico.Count} ms/per game");
+            //Console.WriteLine($"ElapsedTime: {ElapsedTime}");
+            //Console.WriteLine($"Average: {ElapsedTime.TotalMilliseconds/ puertoRico.Count} ms/per game");
 
             //string name = "thread " + (num) + " cost " + ElapsedTime.TotalMilliseconds;
             //string path1 = "C:\\Users\\AUser\\Downloads\\" + name + ".json";

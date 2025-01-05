@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -10,6 +11,9 @@ namespace PuertoRicoSpace
 {
     public static class Utilities
     {
+        [DllImport("kernel32.dll")]
+        public static extern uint GetCurrentThreadId();
+
         public static int RndNum()
         {
             Random rnd = new Random(Guid.NewGuid().GetHashCode());

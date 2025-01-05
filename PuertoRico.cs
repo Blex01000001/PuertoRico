@@ -92,7 +92,7 @@ namespace PuertoRicoSpace
             ElapsedTime = timer.Elapsed;
             _writer.Flush();
             _writer.Close();
-            ShowConsole();
+            //ShowConsole();
         }
         /// <summary>
         /// 將EndGame設為TRUE，代表遊戲達到結束條件
