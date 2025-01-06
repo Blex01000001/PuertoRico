@@ -14,7 +14,6 @@ namespace PuertoRicoSpace
         {
             game._writer.WriteLine($"\t{Name} Action");
             player.AddMoney(game.Bank.GetMoney(1));
-            game._writer.Flush();
         }
     }
 }

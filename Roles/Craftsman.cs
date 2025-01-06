@@ -50,7 +50,6 @@ namespace PuertoRicoSpace
                     game._writer.WriteLine($"{p1.Name} get {getMoney} from bank (Factory)");
                 }
             }
-            game._writer.Flush();
         }
         private int CheckedHarvest(Player player, CargoAbstract good)//小於0代表無法收成
         {

@@ -82,7 +82,6 @@ namespace PuertoRicoSpace
                 game._writer.WriteLine("\n>>>>分數片不夠，遊戲將在角色輪轉後結束<<<<\n");
                 game.CallGame();
             }
-            game._writer.Flush();
         }
         private TransportStrategy CheckStrategy(Ship ship, CargoAbstract good)
         {

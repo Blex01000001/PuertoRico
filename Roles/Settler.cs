@@ -70,7 +70,6 @@ namespace PuertoRicoSpace
                 }
                 game.ArrangeFarms();
             }
-            game._writer.Flush();
         }
         private BuildingAbstract GetQuarry(Player p1, PuertoRico game)
         {

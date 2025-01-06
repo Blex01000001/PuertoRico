@@ -74,7 +74,6 @@ namespace PuertoRicoSpace
                 }
             }
             game.CheckShop();
-            game._writer.Flush();
         }
     }
 }

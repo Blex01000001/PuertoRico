@@ -5,8 +5,6 @@ using System.Linq;
 using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
-//using Newtonsoft.Json;
-//using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using PuertoRico;
@@ -17,35 +15,53 @@ using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Timers;
-
+//manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2+2;
 namespace PuertoRicoSpace
 {
     internal class Program
     {
+        public static string filePath { get { return "D:\\Code\\C#\\PuertoRicoData\\"; } }
         static void Main(string[] args)
         {
-            Console.WriteLine("{0,8}{1,7}{2,7}  {3,-40}", "Time", "Score", "Round","GUID");
-            //Guid guid = Guid.NewGuid();
-            for (int i = 0; i < 50; i++)
+            int totalScoreLimit = 10;
+            int threadNum = 10;
+            int doLoops = 200;
+            List<double> totalThreadAveTime = new List<double>();
+            List<double> totalAveTimePerGame = new List<double>();
+
+            Console.WriteLine($"Thread Num:{threadNum}    Loop:{doLoops}");
+            for (int i = 0; i < threadNum; i++)
             {
-                int ii = i;
                 Thread thread = new Thread(() =>
                 {
                     Stopwatch timer = new Stopwatch();
                     timer.Start();
-                    
                     int managedThreadId = Thread.CurrentThread.ManagedThreadId;
                     int currentThreadId = (int)Utilities.GetCurrentThreadId();
-                    Console.WriteLine($"{managedThreadId} start");
-                    puertoRico1();
+                    RunGame(doLoops, totalScoreLimit);
                     timer.Stop();
                     TimeSpan ElapsedTime = timer.Elapsed;
-
-                    Console.WriteLine("ID:{0,3} {1,5} Time:{2,7}s", managedThreadId, currentThreadId, ElapsedTime.TotalSeconds);
+                    double threadTime = ElapsedTime.TotalSeconds;
+                    double aveTimePerGame = ElapsedTime.TotalMilliseconds / doLoops;
+                    Console.WriteLine("ID:{0,3}  {1,5} time:{2,5:N3}s  Ave:{3,6:N1}ms", managedThreadId, currentThreadId, threadTime, aveTimePerGame);
+                    lock (totalThreadAveTime)
+                    {
+                        totalThreadAveTime.Add(threadTime);
+                    }
+                    lock (totalAveTimePerGame)
+                    {
+                        totalAveTimePerGame.Add(aveTimePerGame);
+                    }
+                    if(totalAveTimePerGame.Count == threadNum)
+                    {
+                        Console.WriteLine("\nTotal Thread Ave Time:   {0,6:N3}  s", totalThreadAveTime.Average());
+                        Console.WriteLine("Total Ave Time Per Game: {0,6:N1} ms ", totalAveTimePerGame.Average());
+                    }
                 });
-
                 thread.Start();
             }
+            //Task.Delay(10000);
+            //Console.WriteLine("\nTotal Thread Ave Time:{0,3:N3}s  Total Ave Time Per Game{1,5:N1} ", totalThreadAveTime.Average(), totalAveTimePerGame.Average());
 
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -73,18 +89,15 @@ namespace PuertoRicoSpace
 
             Console.ReadLine();
         }
-        static private void puertoRico1()
+        static private void RunGame(int doLoops, int totalScoreLimit)
         {
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
             List<PuertoRico> puertoRico = new List<PuertoRico>();
-            ////manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2;
             do
             {
                 Guid guid = Guid.NewGuid();
-                string path = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
+                string path = Program.filePath + guid + ".json";
                 PuertoRico game = new PuertoRico(5, guid);
-                if (game.TotalScore > 10)
+                if (game.TotalScore > totalScoreLimit)
                 {
                     puertoRico.Add(game);
                 }
@@ -95,25 +108,12 @@ namespace PuertoRicoSpace
                 _data.TotalScore = game.TotalScore;
                 _data.PlayerList = game.PlayerList;
                 _data.Bank = game.Bank;
-                //var jsonString = JsonConvert.SerializeObject(game);
-                //_writer.WriteLine(jsonString);
                 string input = JsonSerializer.Serialize(_data);
                 StreamWriter streamWriter = new StreamWriter(path);
                 streamWriter.Write(input);
                 streamWriter.Flush();
                 streamWriter.Close();
-            } while (puertoRico.Count < 50);
-            timer.Stop();
-            TimeSpan ElapsedTime = timer.Elapsed;
-            //Console.WriteLine($"ElapsedTime: {ElapsedTime}");
-            //Console.WriteLine($"Average: {ElapsedTime.TotalMilliseconds/ puertoRico.Count} ms/per game");
-
-            //string name = "thread " + (num) + " cost " + ElapsedTime.TotalMilliseconds;
-            //string path1 = "C:\\Users\\AUser\\Downloads\\" + name + ".json";
-            //StreamWriter streamWriter1 = new StreamWriter(path1);
-            //streamWriter1.Write("name");
-            //streamWriter1.Flush();
-            //streamWriter1.Close();
+            } while (puertoRico.Count < doLoops);
         }
     }
 }

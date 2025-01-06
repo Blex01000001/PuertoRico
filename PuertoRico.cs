@@ -31,7 +31,7 @@ namespace PuertoRicoSpace
         public PuertoRico(int playerNum, Guid guid)
         {
             this.Guid = guid;
-            _filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".txt";
+            _filePath = Program.filePath + guid + ".txt";
             _writer = new StreamWriter(_filePath);
             Stopwatch timer = new Stopwatch();
             timer.Start();

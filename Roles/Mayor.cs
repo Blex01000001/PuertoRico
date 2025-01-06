@@ -52,7 +52,6 @@ namespace PuertoRicoSpace
                 game._writer.WriteLine("\n>>>>移民不夠補充移民船，遊戲將在角色輪轉後結束<<<<\n");
                 game.CallGame();
             }
-            game._writer.Flush();
         }
     }
 

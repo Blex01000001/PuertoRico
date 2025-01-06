@@ -72,7 +72,6 @@ namespace PuertoRicoSpace
                     game.CallGame();
                 }
             }
-            game._writer.Flush();
         }
         private int CheckDiscount(Player player, BuildingAbstract building)
         {
