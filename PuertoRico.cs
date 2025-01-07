@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using PuertoRico;
+using System.Xml.Linq;
+using System.Text.Json;
 
 namespace PuertoRicoSpace
 {
@@ -23,17 +26,20 @@ namespace PuertoRicoSpace
         public int Round { get; private set; }
         public int TotalScore { get; private set; }
         private bool EndGame = false;
-        [JsonIgnore]
         public StreamWriter _writer { get; private set; }
         private string _filePath;
+        private data data;
+        private Option _option;
         public Guid Guid { get; private set; }
 
-        public PuertoRico(int playerNum, Guid guid)
+        public PuertoRico(int playerNum, Option option)
         {
-            this.Guid = guid;
-            _filePath = Program.filePath + guid + ".txt";
+            data = new data();
+            _option = option;
+            this.Guid = option.Guid;
+            _filePath = option.TxtPath;
             _writer = new StreamWriter(_filePath);
-            Stopwatch timer = new Stopwatch();
+            Stopwatch timer = new Stopwatch ();
             timer.Start();
             this.PlayerNum = playerNum;
             Bank = new Bank();
@@ -42,7 +48,44 @@ namespace PuertoRicoSpace
             CreatePlayers(PlayerNum);
             CreateRoles(PlayerNum);
             GameStartSetUp(PlayerNum);
+
+
+            GameTurns();
+
+            CalculateScore();
+            ShowCham();
+            ShowPlayerStatus();
+            timer.Stop();
+            ElapsedTime = timer.Elapsed;
+
+            CheckWriteData();
+            //ShowConsole();
+        }
+        private void CheckWriteData()
+        {
+            if(TotalScore <= _option.ScoreLimit)
+            {
+                _writer.Close();
+                File.Delete(_option.TxtPath);
+                return;
+            }
+            data.PlayerNum = PlayerNum;
+            data.ElapsedTime = ElapsedTime;
+            data.Round = Round;
+            data.TotalScore = TotalScore;
+            data.PlayerList = PlayerList;
+            data.Bank = Bank;
+            string input = JsonSerializer.Serialize(data);
+            StreamWriter streamWriter = new StreamWriter(_option.JsonPath);
+            streamWriter.Write(input);
+            streamWriter.Flush();
+            streamWriter.Close();
             
+            _writer.Flush();
+            _writer.Close();
+        }
+        private void GameTurns()
+        {
             while (!EndGame)
             {
                 _writer.WriteLine($"==========ROUND {Round + 1}==========");
@@ -84,15 +127,6 @@ namespace PuertoRicoSpace
                 _writer.WriteLine("\n");
                 Round++;
             }
-            CalculateScore();
-            ShowCham();
-            ShowPlayerStatus();
-            timer.Stop();
-            // Get the elapsed time as a TimeSpan value.
-            ElapsedTime = timer.Elapsed;
-            _writer.Flush();
-            _writer.Close();
-            //ShowConsole();
         }
         /// <summary>
         /// 將EndGame設為TRUE，代表遊戲達到結束條件

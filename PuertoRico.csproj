@@ -115,6 +115,7 @@
     <Compile Include="Converter\CargoConverter.cs" />
     <Compile Include="data.cs" />
     <Compile Include="Good\CargoAbstract.cs" />
+    <Compile Include="Option.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

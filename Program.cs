@@ -15,63 +15,57 @@ using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Timers;
-//manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2+2;
+using System.Collections.Concurrent;
+//manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2+2+3;
 namespace PuertoRicoSpace
 {
     internal class Program
     {
-        public static string filePath { get { return "D:\\Code\\C#\\PuertoRicoData\\"; } }
         static void Main(string[] args)
         {
-            int totalScoreLimit = 10;
-            int threadNum = 10;
-            int doLoops = 200;
-            List<double> totalThreadAveTime = new List<double>();
-            List<double> totalAveTimePerGame = new List<double>();
+            int totalScoreLimit = 130;
+            int threadNum = 8;
+            int ForLoops = 10;
+            ConcurrentBag<double> totalThreadAveTime = new ConcurrentBag<double>();
+            ConcurrentBag<double> totalAveTimePerGame = new ConcurrentBag<double>();
+            List<Thread> threads = new List<Thread>();
 
-            Console.WriteLine($"Thread Num:{threadNum}    Loop:{doLoops}");
-            for (int i = 0; i < threadNum; i++)
-            {
+            Console.WriteLine($"Thread Num:{threadNum}    Loop:{ForLoops}");
+            Console.WriteLine("\n{0,-4}{1,-7}{2,-13}{3,-15}", "ID", "id", "Thread Time", "Ave game time");
+            for (int i = 0; i < threadNum; i++) 
+            { 
                 Thread thread = new Thread(() =>
                 {
                     Stopwatch timer = new Stopwatch();
-                    timer.Start();
                     int managedThreadId = Thread.CurrentThread.ManagedThreadId;
                     int currentThreadId = (int)Utilities.GetCurrentThreadId();
-                    RunGame(doLoops, totalScoreLimit);
+                    timer.Start();
+                    //RunGame(doLoops, totalScoreLimit);
+                    for (int j = 0; j < ForLoops; j++)
+                    {
+                        Option option = new Option(scoreLimit: totalScoreLimit);
+                        PuertoRico game = new PuertoRico(5, option);
+                    }
                     timer.Stop();
                     TimeSpan ElapsedTime = timer.Elapsed;
                     double threadTime = ElapsedTime.TotalSeconds;
-                    double aveTimePerGame = ElapsedTime.TotalMilliseconds / doLoops;
-                    Console.WriteLine("ID:{0,3}  {1,5} time:{2,5:N3}s  Ave:{3,6:N1}ms", managedThreadId, currentThreadId, threadTime, aveTimePerGame);
-                    lock (totalThreadAveTime)
-                    {
-                        totalThreadAveTime.Add(threadTime);
-                    }
-                    lock (totalAveTimePerGame)
-                    {
-                        totalAveTimePerGame.Add(aveTimePerGame);
-                    }
-                    if(totalAveTimePerGame.Count == threadNum)
-                    {
-                        Console.WriteLine("\nTotal Thread Ave Time:   {0,6:N3}  s", totalThreadAveTime.Average());
-                        Console.WriteLine("Total Ave Time Per Game: {0,6:N1} ms ", totalAveTimePerGame.Average());
-                    }
+                    double aveTimePerGame = ElapsedTime.TotalMilliseconds / ForLoops;
+                    Console.WriteLine("{0,-4}{1,-7}{2,-13:N3}{3,-15:N1}", managedThreadId, currentThreadId, threadTime, aveTimePerGame);
+                    totalThreadAveTime.Add(threadTime);
+                    totalAveTimePerGame.Add(aveTimePerGame);
                 });
+                threads.Add(thread);
                 thread.Start();
             }
-            //Task.Delay(10000);
-            //Console.WriteLine("\nTotal Thread Ave Time:{0,3:N3}s  Total Ave Time Per Game{1,5:N1} ", totalThreadAveTime.Average(), totalAveTimePerGame.Average());
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
 
-            //Stopwatch timer = new Stopwatch();
-            //timer.Start();
-            //Task.Delay(2000).Wait();
-            //timer.Stop();
-            //TimeSpan ElapsedTime = timer.Elapsed;
-            //_writer.WriteLine($"thread cost {ElapsedTime.TotalMilliseconds}");
-            //_writer.WriteLine("{0,15}{1,15}{2,7}{3,7}", "1234567890", "123456", "987", "6666");
-
-
+            Console.WriteLine("\nTotal Thread Ave Time:   {0,6:N3}  s", totalThreadAveTime.Average());
+            Console.WriteLine("Total Ave Time Per Game: {0,6:N1} ms ", totalAveTimePerGame.Average());
+            
+            
             //string filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
             //string jsonInput = File.ReadAllText(filePath);
             //var options = new JsonSerializerOptions
@@ -87,33 +81,8 @@ namespace PuertoRicoSpace
             //da.ShowPlayerStatus();
             //da.ShowCargo();
 
+
             Console.ReadLine();
-        }
-        static private void RunGame(int doLoops, int totalScoreLimit)
-        {
-            List<PuertoRico> puertoRico = new List<PuertoRico>();
-            do
-            {
-                Guid guid = Guid.NewGuid();
-                string path = Program.filePath + guid + ".json";
-                PuertoRico game = new PuertoRico(5, guid);
-                if (game.TotalScore > totalScoreLimit)
-                {
-                    puertoRico.Add(game);
-                }
-                data _data = new data();
-                _data.PlayerNum = game.PlayerNum;
-                _data.ElapsedTime = game.ElapsedTime;
-                _data.Round = game.Round;
-                _data.TotalScore = game.TotalScore;
-                _data.PlayerList = game.PlayerList;
-                _data.Bank = game.Bank;
-                string input = JsonSerializer.Serialize(_data);
-                StreamWriter streamWriter = new StreamWriter(path);
-                streamWriter.Write(input);
-                streamWriter.Flush();
-                streamWriter.Close();
-            } while (puertoRico.Count < doLoops);
         }
     }
 }
