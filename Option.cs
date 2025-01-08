@@ -16,7 +16,8 @@ namespace PuertoRico
         public Option(int scoreLimit = 0)
         {
             ScoreLimit = scoreLimit;
-            DirPath = "D:\\Code\\C#\\PuertoRicoData\\";
+            DirPath = System.Environment.CurrentDirectory + "\\";
+            //DirPath = "D:\\Code\\C#\\PuertoRicoData\\";
             Guid = Guid.NewGuid();
             JsonPath = DirPath + Guid + ".json";
             TxtPath = DirPath + Guid + ".txt";

@@ -16,56 +16,25 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Timers;
 using System.Collections.Concurrent;
-//manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2+2+3;
+//manhour = 2+1+1+2+2+1+1+2+3.5+3+2+6+0.5+2+2.5+9.5+7+0.5+1+2+2+1+1.5+2.5+4+2+3+3.5+1+3+2+2+3+2;
 namespace PuertoRicoSpace
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            int totalScoreLimit = 130;
-            int threadNum = 8;
-            int ForLoops = 10;
-            ConcurrentBag<double> totalThreadAveTime = new ConcurrentBag<double>();
-            ConcurrentBag<double> totalAveTimePerGame = new ConcurrentBag<double>();
-            List<Thread> threads = new List<Thread>();
-
-            Console.WriteLine($"Thread Num:{threadNum}    Loop:{ForLoops}");
-            Console.WriteLine("\n{0,-4}{1,-7}{2,-13}{3,-15}", "ID", "id", "Thread Time", "Ave game time");
-            for (int i = 0; i < threadNum; i++) 
-            { 
-                Thread thread = new Thread(() =>
-                {
-                    Stopwatch timer = new Stopwatch();
-                    int managedThreadId = Thread.CurrentThread.ManagedThreadId;
-                    int currentThreadId = (int)Utilities.GetCurrentThreadId();
-                    timer.Start();
-                    //RunGame(doLoops, totalScoreLimit);
-                    for (int j = 0; j < ForLoops; j++)
-                    {
-                        Option option = new Option(scoreLimit: totalScoreLimit);
-                        PuertoRico game = new PuertoRico(5, option);
-                    }
-                    timer.Stop();
-                    TimeSpan ElapsedTime = timer.Elapsed;
-                    double threadTime = ElapsedTime.TotalSeconds;
-                    double aveTimePerGame = ElapsedTime.TotalMilliseconds / ForLoops;
-                    Console.WriteLine("{0,-4}{1,-7}{2,-13:N3}{3,-15:N1}", managedThreadId, currentThreadId, threadTime, aveTimePerGame);
-                    totalThreadAveTime.Add(threadTime);
-                    totalAveTimePerGame.Add(aveTimePerGame);
-                });
-                threads.Add(thread);
-                thread.Start();
-            }
-            foreach (var thread in threads)
+            int.TryParse(args[0], out int threadNum);
+            int.TryParse(args[1], out int forLoops);
+            if (args.Length > 2)
             {
-                thread.Join();
+                int.TryParse(args[2], out int totalScoreLimit);
+                RubGame(threadNum, forLoops, totalScoreLimit);
+            }
+            else
+            {
+                RubGame(threadNum, forLoops);
             }
 
-            Console.WriteLine("\nTotal Thread Ave Time:   {0,6:N3}  s", totalThreadAveTime.Average());
-            Console.WriteLine("Total Ave Time Per Game: {0,6:N1} ms ", totalAveTimePerGame.Average());
-            
-            
             //string filePath = "D:\\Code\\C#\\PuertoRicoData\\" + guid + ".json";
             //string jsonInput = File.ReadAllText(filePath);
             //var options = new JsonSerializerOptions
@@ -82,7 +51,62 @@ namespace PuertoRicoSpace
             //da.ShowCargo();
 
 
-            Console.ReadLine();
+            //Console.ReadLine();
+        }
+
+        public static void RubGame(int threadNum = 1, int forLoops = 1, int totalScoreLimit = 130)
+        {
+            //int totalScoreLimit = 130;
+            //int threadNum = 20;
+            //int ForLoops = 200;
+            ConcurrentBag<double> totalThreadAveTime = new ConcurrentBag<double>();
+            ConcurrentBag<double> totalAveTimePerGame = new ConcurrentBag<double>();
+            List<Thread> threads = new List<Thread>();
+            ThreadPool.GetMaxThreads(out int workerThreads, out int completionPortThreads);
+            ThreadPool.GetMinThreads(out int workerThreads1, out int completionPortThreads1);
+            //Console.WriteLine($"默認最大執行緒數量：{workerThreads}，I/O 執行緒：{completionPortThreads}");
+            //Console.WriteLine($"默認最小執行緒數量：{workerThreads1}，I/O 執行緒：{completionPortThreads1}");
+            Console.WriteLine($"Thread Num:{threadNum}    Loop:{forLoops}");
+            Console.WriteLine("\n{0,-5}{1,-9}{2,11}{3,16}", "ID", "id", "Thread t", "Ave game time");
+            Stopwatch mainTimer = new Stopwatch();
+            mainTimer.Start();
+            for (int i = 0; i < threadNum; i++)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    Stopwatch subTimer = new Stopwatch();
+                    int managedThreadId = Thread.CurrentThread.ManagedThreadId;
+                    int currentThreadId = (int)Utilities.GetCurrentThreadId();
+                    subTimer.Start();
+                    //RunGame(doLoops, totalScoreLimit);
+                    for (int j = 0; j < forLoops; j++)
+                    {
+                        Option option = new Option(scoreLimit: totalScoreLimit);
+                        PuertoRico game = new PuertoRico(5, option);
+                    }
+                    subTimer.Stop();
+                    TimeSpan ElapsedTime = subTimer.Elapsed;
+                    double threadTime = ElapsedTime.TotalSeconds;
+                    double aveTimePerGame = ElapsedTime.TotalMilliseconds / (forLoops);
+                    Console.WriteLine("{0,-5}{1,-9}{2,10:N2}s{3,15:N1}ms", managedThreadId, currentThreadId, threadTime, aveTimePerGame);
+                    totalThreadAveTime.Add(threadTime);
+                    totalAveTimePerGame.Add(aveTimePerGame);
+                });
+                threads.Add(thread);
+                thread.Start();
+            }
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
+            mainTimer.Stop();
+            TimeSpan mainTime = mainTimer.Elapsed;
+            double mainThreadTime = mainTime.TotalSeconds;
+            double mainAveTimePerGame = mainTime.TotalMilliseconds / (threadNum * forLoops);
+
+            Console.WriteLine("{0,-5}{1,-9}{2,10:N2}s{3,15:N1}ms", "Ave", "", totalThreadAveTime.Average(), totalAveTimePerGame.Average());
+            Console.WriteLine("{0,-5}{1,-9}{2,10:N2}s{3,15:N1}ms", "Total", "", mainThreadTime, mainAveTimePerGame);
+
         }
     }
 }
